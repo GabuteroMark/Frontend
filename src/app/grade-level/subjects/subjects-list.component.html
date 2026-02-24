@@ -1,0 +1,106 @@
+<Style>
+  /* Make modal backdrop appear behind modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1040;
+}
+
+/* Ensure modal is above backdrop */
+.modal {
+  z-index: 1050;
+}
+
+/* Optional: make modal content scrollable */
+.modal-dialog-scrollable {
+  max-height: 80vh;
+}
+</Style>
+
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Subjects</h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light btn-sm" (click)="goBack()">⬅ Back</button>
+        <button class="btn btn-success btn-sm" (click)="addSubject()">➕ Add Subject</button>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0 table-secondary">
+        <thead class="table-dark">
+          <tr>
+            <th>Subject</th>
+            <th style="width: 300px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="loading">
+            <td colspan="3" class="text-center py-4">Loading...</td>
+          </tr>
+
+          <tr *ngFor="let subject of subjects">
+            <td>{{ subject.name }}</td>
+            <td class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary" (click)="editSubject(subject.id)">✏️ Edit</button>
+              <button class="btn btn-sm btn-outline-danger" (click)="deleteSubject(subject.id)">🗑 Delete</button>
+              <button class="btn btn-sm btn-outline-info" (click)="viewSubjectPDFs(subject.id, subject.name)">📄 PDFs</button>
+            </td>
+          </tr>
+
+          <tr *ngIf="!loading && subjects.length === 0">
+            <td colspan="3" class="text-center text-muted py-4">No subjects found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop -->
+<div *ngIf="showPdfModal" class="modal-backdrop fade show"></div>
+
+<!-- PDF Modal -->
+<div class="modal fade" tabindex="-1" [class.show]="showPdfModal" [ngStyle]="{'display': showPdfModal ? 'block' : 'none'}">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">PDFs for {{ selectedSubjectName }}</h5>
+        <button type="button" class="btn-close" (click)="closePdfModal()"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>File</th>
+              <th>Created At</th>
+              <th>Download</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pdf of pdfsForSubject; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ pdf.name }}</td>
+              <td>{{ pdf.createdAt | date:'medium' }}</td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="downloadPDF(pdf)">Download</button>
+              </td>
+            </tr>
+            <tr *ngIf="pdfsForSubject.length === 0">
+              <td colspan="4" class="text-center text-muted">No PDFs found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closePdfModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

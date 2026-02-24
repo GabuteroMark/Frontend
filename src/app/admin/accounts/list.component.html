@@ -1,0 +1,44 @@
+﻿<div class="container my-5">
+    <h1 class="text-center text-primary mb-4">Accounts</h1>
+    <p class="text-center mb-4">All accounts fetched from the secure (admin-only) API endpoint.</p>
+
+    <div class="d-flex justify-content-end mb-4">
+        <a routerLink="add" class="btn btn-success btn-lg">
+            <i class="bi bi-person-plus"></i> Create Account
+        </a>
+    </div>
+
+    <div *ngIf="!accounts || accounts.length === 0" class="text-center">
+        <p>No accounts found.</p>
+        <span class="spinner-border spinner-border-lg"></span>
+    </div>
+
+    <table *ngIf="accounts && accounts.length > 0" class="table table-hover table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th style="width:30%">Name</th>
+                <th style="width:30%">Email</th>
+                <th style="width:30%">Role</th>
+                <th style="width:10%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let account of accounts" class="align-middle">
+                <td>{{ account.title }} {{ account.firstName }} {{ account.lastName }}</td>
+                <td>{{ account.email }}</td>
+                <td>{{ account.role }}</td>
+                <td class="text-nowrap">
+                    <a routerLink="edit/{{ account.id }}" class="btn btn-sm btn-primary me-2">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <button (click)="deleteAccount(account.id)" class="btn btn-sm btn-danger" [disabled]="account.isDeleting">
+                        <span *ngIf="account.isDeleting" class="spinner-border spinner-border-sm"></span>
+                        <span *ngIf="!account.isDeleting">
+                            <i class="bi bi-trash"></i> Delete
+                        </span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,130 @@
+﻿  <!-- CSS (for hover effect) -->
+  <style>
+  
+.nav-link {
+  position: relative;
+  padding-left: 12px;
+  padding-right: 12px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* ===============================
+   Hover Effect
+================================ */
+.nav-link:hover {
+  color: #ffeb3b !important;
+}
+
+/* Underline animation (hover) */
+.nav-link.hover-underline-animation::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background-color: skyblue;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.nav-link.hover-underline-animation:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* ===============================
+   ACTIVE PAGE HIGHLIGHT
+================================ */
+.active-link {
+  background-color: grey;
+  color: #000 !important;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+/* Keep underline visible when active */
+.active-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #000;
+  transform: scaleX(1);
+}
+
+  </style>
+
+
+<div class="app-container d-flex" [ngClass]="{ 'bg-light': account }" [ngStyle]="{ 'padding-top': account?.role === Role.User || account?.role === Role.Staff ? '56px' : '0' }">
+    <!-- Sidebar for Admin -->
+    <nav *ngIf="account?.role === Role.Admin" 
+         class="navbar navbar-expand-lg navbar-dark bg-dark flex-column p-3 shadow-sm"
+         style="position: fixed; top: 0; left: 0; width: 220px; height: 100vh; z-index: 1000; border-right: 2px solid #444;">
+        <div class="navbar-nav flex-column w-100 h-100">
+            <div class="mb-4">
+                <h4 class="text-center text-white mb-3">Admin Dashboard</h4>
+            </div>
+
+            <!-- Sidebar Links -->
+            <a
+  routerLink="/"
+  routerLinkActive="active-link"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="nav-item nav-link fw-bold text-white mb-3 p-2 rounded hover-underline-animation"
+>
+  HOME
+</a>
+
+<a
+  routerLink="/grade-level"
+  routerLinkActive="active-link"
+  class="nav-item nav-link fw-bold text-white mb-3 p-2 rounded hover-underline-animation"
+>
+  DATABANK
+</a>
+
+<a
+  routerLink="/ai-upload"
+  routerLinkActive="active-link"
+  class="nav-item nav-link fw-bold text-white mb-3 p-2 rounded hover-underline-animation"
+>
+  GENERATE QUESTION
+</a>
+
+            <!-- <a routerLink="/product" routerLinkActive="active" class="nav-item nav-link fw-bold text-white mb-3 p-2 rounded hover-sidebar-link">
+                PRODUCT
+            </a>
+            <a routerLink="/inventory" routerLinkActive="active" class="nav-item nav-link fw-bold text-white mb-3 p-2 rounded hover-sidebar-link">
+                INVENTORY
+            </a>
+            <a routerLink="/warehouse" routerLinkActive="active" class="nav-item nav-link fw-bold text-white mb-3 p-2 rounded hover-sidebar-link">
+                WAREHOUSE
+            </a>
+            <a routerLink="/admin" routerLinkActive="active" class="nav-item nav-link fw-bold text-white mb-3 p-2 rounded hover-sidebar-link">
+                ADMIN
+            </a> -->
+
+            <!-- Logout Button (fixed at bottom) -->
+            <div class="mt-auto">
+                <button (click)="logout()" class="btn btn-outline-light w-100 mb-3">LOGOUT</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow-1" [ngStyle]="{ 'margin-left': account?.role === Role.Admin ? '220px' : '0' }">
+        <!-- Subnav Router Outlet -->
+        <router-outlet name="subnav"></router-outlet>
+
+        <!-- Global Alert -->
+        <alert></alert>
+
+        <!-- Main Router Outlet -->
+        <router-outlet></router-outlet>
+    </div>
+</div>
+

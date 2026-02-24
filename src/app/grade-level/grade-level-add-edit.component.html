@@ -1,0 +1,55 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">{{ title }}</h5>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Grade Level Name</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="name"
+            placeholder="e.g. Grade 10"
+            [disabled]="submitting"
+            [ngClass]="{
+              'is-invalid': f.name.invalid && (f.name.touched || f.name.dirty)
+            }"
+          />
+          <div class="invalid-feedback">
+            Grade level is required
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="submitting || form.invalid"
+          >
+            <span
+              *ngIf="submitting"
+              class="spinner-border spinner-border-sm me-2"
+            ></span>
+            Save
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="onCancel()"
+            [disabled]="submitting"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+          {{ errorMessage }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

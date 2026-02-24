@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Grade Levels</h5>
+      <a routerLink="add" class="btn btn-light btn-sm">
+        ➕ Add Grade Level
+      </a>
+    </div>
+
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Grade Level</th>
+            <th style="width: 240px;">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- Loading state -->
+          <tr *ngIf="loading">
+            <td colspan="2" class="text-center py-4">Loading...</td>
+          </tr>
+
+          <!-- Grade Levels -->
+          <tr *ngFor="let gradeLevel of gradeLevels">
+            <td>{{ gradeLevel.name }}</td>
+            <td>
+              <a
+                class="btn btn-sm btn-outline-primary me-2"
+                [routerLink]="['edit', gradeLevel.id]"
+              >
+                ✏️ Edit
+              </a>
+
+              <!-- ✅ Subjects button -->
+              <a
+                class="btn btn-sm btn-outline-success"
+                [routerLink]="[gradeLevel.id, 'subjects']"
+              >
+                📘 Subjects
+              </a>
+            </td>
+          </tr>
+
+          <!-- No grade levels -->
+          <tr *ngIf="!loading && gradeLevels.length === 0">
+            <td colspan="2" class="text-center text-muted py-4">
+              No grade levels found
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

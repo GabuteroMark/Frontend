@@ -1,0 +1,29 @@
+<div class="container mt-4">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h4>Generated Questions</h4>
+      </div>
+      <div class="card-body">
+  
+        <div *ngIf="questions.length === 0">No questions generated.</div>
+  
+        <ol *ngIf="questions.length > 0">
+          <li *ngFor="let q of questions">
+            <strong>{{ q.question }}</strong>
+            <ul>
+              <li>A. {{ q.options.A }}</li>
+              <li>B. {{ q.options.B }}</li>
+              <li>C. {{ q.options.C }}</li>
+              <li>D. {{ q.options.D }}</li>
+            </ul>
+          </li>
+        </ol>
+  
+        <button class="btn btn-success mt-3" (click)="downloadPDF()" [disabled]="!downloadUrl">
+          Download PDF
+        </button>
+  
+      </div>
+    </div>
+  </div>
+  
