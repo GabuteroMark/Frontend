@@ -47,9 +47,9 @@
           <tr *ngFor="let subject of subjects">
             <td>{{ subject.name }}</td>
             <td class="d-flex gap-2">
-              <button class="btn btn-sm btn-outline-primary" (click)="editSubject(subject.id)">✏️ Edit</button>
-              <button class="btn btn-sm btn-outline-danger" (click)="deleteSubject(subject.id)">🗑 Delete</button>
-              <button class="btn btn-sm btn-outline-info" (click)="viewSubjectPDFs(subject.id, subject.name)">📄 PDFs</button>
+              <button class="btn btn-sm btn-primary" (click)="editSubject(subject.id)">✏️ Edit</button>
+              <!-- <button class="btn btn-sm btn-outline-danger" (click)="deleteSubject(subject.id)">🗑 Delete</button> -->
+              <button class="btn btn-sm btn-secondary" (click)="viewSubjectPDFs(subject.id, subject.name)">📄 PDFs</button>
             </td>
           </tr>
 
