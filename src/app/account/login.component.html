@@ -1,41 +1,158 @@
-﻿<h3 class="card-header text-center bg-primary text-white py-3">Login</h3>
-<div class="card-body">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <!-- Email Field -->
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" placeholder="Enter your email" />
-            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                <div *ngIf="f.email.errors.required">Email is required</div>
-                <div *ngIf="f.email.errors.email">Email is invalid</div>
-            </div>
-        </div>
+﻿<!-- ===============================
+     LANDSCAPE CLEAN LOGIN PAGE
+================================ -->
 
-        <!-- Password Field -->
-        <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" placeholder="Enter your password" />
-            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                <div *ngIf="f.password.errors.required">Password is required</div>
-            </div>
+<style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f4f6f9;
+    }
+    
+    /* Full screen layout */
+    .login-container {
+      min-height: 100vh;
+    }
+    
+    /* Left panel */
+    .login-left {
+      background-color: #1e293b;
+      color: white;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .login-left h1 {
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    
+    .login-left p {
+      color: #cbd5e1;
+      font-size: 15px;
+    }
+    
+    /* Right panel */
+    .login-right {
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+    }
+    
+    /* Form box */
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    /* Inputs */
+    .form-control {
+      border-radius: 6px;
+      padding: 10px;
+    }
+    
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #2563eb;
+    }
+    
+    /* Button */
+    .btn-login {
+      border-radius: 6px;
+      padding: 10px;
+      font-weight: 500;
+    }
+    
+    /* Links */
+    .link-clean {
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .link-clean:hover {
+      text-decoration: underline;
+    }
+    </style>
+    
+    <div class="container-fluid login-container">
+      <div class="row g-0">
+    
+        <!-- LEFT SIDE -->
+        <div class="col-md-6 login-left">
+          <h1>Question Databank & Test Generator</h1>
+          <p>
+            A secure and efficient platform designed to streamline
+            exam creation, manage question banks, and generate
+            professional assessment materials.
+          </p>
         </div>
-
-        <!-- Login and Other Links -->
-        <div class="row">
-            <div class="mb-3 col">
-                <button [disabled]="submitting" class="btn btn-primary w-100">
-                    <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
-                    Login
-                </button>
-            </div>
-            <div class="mb-3 col text-center">
-                <a routerLink="../register" class="btn btn-link text-decoration-none">Don't have an account? Register</a>
-            </div>
+    
+        <!-- RIGHT SIDE -->
+        <div class="col-md-6 login-right">
+          <div class="login-box">
+    
+            <h4 class="mb-4 text-center">Login to Your Account</h4>
+    
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    
+              <!-- Email -->
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email"
+                       formControlName="email"
+                       class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
+                       placeholder="Enter your email">
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Email is required</div>
+                  <div *ngIf="f.email.errors.email">Email is invalid</div>
+                </div>
+              </div>
+    
+              <!-- Password -->
+              <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input type="password"
+                       formControlName="password"
+                       class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+                       placeholder="Enter your password">
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required">Password is required</div>
+                </div>
+              </div>
+    
+              <!-- Button -->
+              <button [disabled]="submitting"
+                      class="btn btn-primary btn-login w-100">
+                <span *ngIf="submitting"
+                      class="spinner-border spinner-border-sm me-1"></span>
+                Login
+              </button>
+    
+              <!-- Links -->
+              <div class="text-center mt-3">
+                <a routerLink="../forgot-password"
+                   class="link-clean text-muted">
+                   Forgot Password?
+                </a>
+              </div>
+    
+              <div class="text-center mt-2">
+                <span class="text-muted">Don't have an account?</span>
+                <a routerLink="../register" class="link-clean ms-1">
+                  Register
+                </a>
+              </div>
+    
+            </form>
+    
+          </div>
         </div>
-
-        <!-- Forgot Password Link -->
-        <div class="text-center">
-            <a routerLink="../forgot-password" class="btn btn-sm btn-secondary mb-2">Forgot Password?</a>
-        </div>
-    </form>
-</div>
+    
+      </div>
+    </div>
