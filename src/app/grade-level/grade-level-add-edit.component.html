@@ -3,12 +3,11 @@
 ================================ -->
 
 <style>
-
   /* Page background */
   .container {
     max-width: 600px;
   }
-  
+
   /* Card redesign */
   .card {
     border: none;
@@ -16,15 +15,15 @@
     overflow: hidden;
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(15px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     transition: 0.3s ease;
   }
-  
+
   .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   }
-  
+
   /* Header */
   .card-header {
     background: linear-gradient(135deg, #16a34a, #22c55e);
@@ -32,19 +31,19 @@
     padding: 20px;
     text-align: center;
   }
-  
+
   .card-header h5 {
     font-weight: 600;
     letter-spacing: 1px;
     font-size: 18px;
   }
-  
+
   /* Form label */
   .form-label {
     font-size: 14px;
     letter-spacing: 0.5px;
   }
-  
+
   /* Input */
   .form-control {
     border-radius: 12px;
@@ -53,12 +52,12 @@
     transition: all 0.3s ease;
     font-size: 14px;
   }
-  
+
   .form-control:focus {
     border-color: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
-  
+
   /* Buttons */
   .btn-success {
     background: linear-gradient(135deg, #16a34a, #22c55e);
@@ -68,93 +67,87 @@
     font-weight: 600;
     transition: 0.3s ease;
   }
-  
+
   .btn-success:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(34,197,94,0.4);
+    box-shadow: 0 10px 20px rgba(34, 197, 94, 0.4);
   }
-  
+
   .btn-outline-secondary {
     border-radius: 10px;
     padding: 10px 20px;
     transition: 0.3s ease;
   }
-  
+
   .btn-outline-secondary:hover {
     background: #f1f5f9;
     transform: translateY(-2px);
   }
-  
+
   /* Error alert */
   .alert-danger {
     border-radius: 10px;
     font-size: 14px;
   }
-  
+
   /* Spinner alignment */
   .spinner-border-sm {
     vertical-align: middle;
   }
-  
-  </style>
-  
-  
-  <div class="container mt-5">
-    <div class="card">
-  
-      <div class="card-header text-white">
-        <h5 class="mb-0">{{ title }}</h5>
-      </div>
-  
-      <div class="card-body p-4">
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-  
-          <div class="mb-4">
-            <label class="form-label fw-semibold">Grade Level Name</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="name"
-              placeholder="e.g. Grade 10"
-              [disabled]="submitting"
-              [ngClass]="{
-                'is-invalid': f.name.invalid && (f.name.touched || f.name.dirty)
-              }"
-            />
-            <div class="invalid-feedback">
-              Grade level is required
-            </div>
-          </div>
-  
-          <div class="d-flex gap-3">
-            <button
-              type="submit"
-              class="btn btn-success"
-              [disabled]="submitting || form.invalid"
-            >
-              <span
-                *ngIf="submitting"
-                class="spinner-border spinner-border-sm me-2"
-              ></span>
-              Save
-            </button>
-  
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              (click)="onCancel()"
-              [disabled]="submitting"
-            >
-              Cancel
-            </button>
-          </div>
-  
-          <div *ngIf="errorMessage" class="alert alert-danger mt-4">
-            {{ errorMessage }}
-          </div>
-  
-        </form>
-      </div>
-  
+</style>
+
+
+<div class="container mt-5">
+  <div class="card">
+
+    <div class="card-header text-white">
+      <h5 class="mb-0">{{ title }}</h5>
     </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Grade Level Name</label>
+          <input type="text" class="form-control" formControlName="name" placeholder="e.g. Grade 10"
+            [disabled]="submitting" [ngClass]="{
+                'is-invalid': f.name.invalid && (f.name.touched || f.name.dirty)
+              }" />
+          <div class="invalid-feedback">
+            Grade level is required
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Academic Level</label>
+          <select class="form-control" formControlName="academicLevel" [disabled]="submitting" [ngClass]="{
+                'is-invalid': f.academicLevel.invalid && (f.academicLevel.touched || f.academicLevel.dirty)
+              }">
+            <option value="" disabled>Select Academic Level</option>
+            <option *ngFor="let level of academicLevels" [value]="level">{{ level }}</option>
+          </select>
+          <div class="invalid-feedback">
+            Academic level is required
+          </div>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-success" [disabled]="submitting || form.invalid">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+            Save
+          </button>
+
+          <button type="button" class="btn btn-outline-secondary" (click)="onCancel()" [disabled]="submitting">
+            Cancel
+          </button>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-4">
+          {{ errorMessage }}
+        </div>
+
+      </form>
+    </div>
+
   </div>
+</div>

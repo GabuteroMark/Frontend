@@ -15,27 +15,39 @@ export class GradeLevelAddEditComponent implements OnInit {
   title = 'Add Grade Level';
   id?: number;
   errorMessage: string = '';
+  academicLevels: string[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private gradeLevelService: GradeLevelService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const paramId = this.route.snapshot.paramMap.get('id');
     this.id = paramId ? Number(paramId) : undefined;
 
     this.form = this.formBuilder.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      academicLevel: ['', Validators.required]
     });
+
+    this.academicLevels = [
+      'Primary Education',
+      'Secondary Education',
+      'Senior High School',
+      'Tertiary Education'
+    ];
 
     if (this.id) {
       this.title = 'Edit Grade Level';
       this.gradeLevelService.getById(this.id).subscribe({
         next: (data: GradeLevel) => {
-          this.form.patchValue({ name: data.name });
+          this.form.patchValue({
+            name: data.name,
+            academicLevel: data.academicLevel
+          });
         },
         error: (err) => {
           console.error('Failed to load grade level', err);

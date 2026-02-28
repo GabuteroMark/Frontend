@@ -27,13 +27,13 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: [Role.Admin] }
     },
-      
+
     // ✅ AI Upload route
     {
         path: 'ai-upload',
         loadChildren: aiUploadModule,
         canActivate: [AuthGuard],
-        data: { roles: [Role.Admin, Role.Staff] } // allow Admin & Staff access
+        data: { roles: [Role.Admin, Role.Teacher, Role.Coordinator] } // allow Admin, Teacher, & Coordinator access
     },
 
     // Fallback route

@@ -10,7 +10,7 @@
         <strong>Role: </strong> {{ account.role }}<br />
     </div>
     <!-- Update Profile Button -->
-    <div class="text-left">
+    <div *ngIf="isAdmin()" class="text-left">
         <a routerLink="update" class="btn btn-success btn-lg text-white rounded-pill shadow-sm">Update Profile</a>
     </div>
 </div>
@@ -48,34 +48,18 @@
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <label for="actionType">Action Type Search:</label>
-                <input
-                    type="text"
-                    id="actionType"
-                    class="form-control rounded-pill shadow-sm"
-                    placeholder="Search by action type..."
-                    [(ngModel)]="searchTerm"
-                    (input)="handleSearch()"
-                />
+                <input type="text" id="actionType" class="form-control rounded-pill shadow-sm"
+                    placeholder="Search by action type..." [(ngModel)]="searchTerm" (input)="handleSearch()" />
             </div>
             <div class="col-md-4">
                 <label for="startDate">Start Date:</label>
-                <input
-                    type="datetime-local"
-                    id="startDate"
-                    class="form-control rounded-pill shadow-sm"
-                    [(ngModel)]="startDate"
-                    (change)="handleSearch()"
-                />
+                <input type="datetime-local" id="startDate" class="form-control rounded-pill shadow-sm"
+                    [(ngModel)]="startDate" (change)="handleSearch()" />
             </div>
             <div class="col-md-4">
                 <label for="endDate">End Date:</label>
-                <input
-                    type="datetime-local"
-                    id="endDate"
-                    class="form-control rounded-pill shadow-sm"
-                    [(ngModel)]="endDate"
-                    (change)="handleSearch()"
-                />
+                <input type="datetime-local" id="endDate" class="form-control rounded-pill shadow-sm"
+                    [(ngModel)]="endDate" (change)="handleSearch()" />
             </div>
         </div>
 
@@ -116,15 +100,18 @@
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <label for="adminActionType">Action type:</label>
-                <input [(ngModel)]="adminSearchTerm" (input)="handleAdminSearch()" placeholder="Search all logs Actions" class="form-control rounded-pill shadow-sm" />
+                <input [(ngModel)]="adminSearchTerm" (input)="handleAdminSearch()" placeholder="Search all logs Actions"
+                    class="form-control rounded-pill shadow-sm" />
             </div>
             <div class="col-md-4">
                 <label for="adminStartDate">Start Date:</label>
-                <input [(ngModel)]="adminStartDate" (change)="handleAdminSearch()" type="datetime-local" class="form-control rounded-pill shadow-sm" />
+                <input [(ngModel)]="adminStartDate" (change)="handleAdminSearch()" type="datetime-local"
+                    class="form-control rounded-pill shadow-sm" />
             </div>
             <div class="col-md-4">
                 <label for="adminEndDate">End Date:</label>
-                <input [(ngModel)]="adminEndDate" (change)="handleAdminSearch()" type="datetime-local" class="form-control rounded-pill shadow-sm" />
+                <input [(ngModel)]="adminEndDate" (change)="handleAdminSearch()" type="datetime-local"
+                    class="form-control rounded-pill shadow-sm" />
             </div>
         </div>
 
@@ -138,7 +125,7 @@
                         <th>Timestamp</th>
                     </tr>
                 </thead>
-                
+
                 <tbody>
                     <tr *ngFor="let log of filteredAllLogs">
                         <td>{{ log.actionType }}</td>

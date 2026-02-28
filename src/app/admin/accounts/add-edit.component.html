@@ -201,9 +201,9 @@
                     class="form-select"
                     [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
               <option value=""></option>
-              <option value="User">User</option>
               <option value="Admin">Admin</option>
-              <option value="Staff">Staff</option>
+              <option value="Teacher">Teacher</option>
+              <option value="Coordinator">Coordinator</option>
             </select>
             <div *ngIf="submitted && f.role.errors"
                  class="invalid-feedback">

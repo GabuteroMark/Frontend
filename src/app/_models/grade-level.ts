@@ -1,5 +1,5 @@
 export interface GradeLevel {
-    id: number;
-    name: string;
-  }
-  
+  id: number;
+  name: string;
+  academicLevel?: string;
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GradeLevelService } from '@app/_services';
 import { GradeLevel } from '@app/_models';
 
@@ -10,19 +10,21 @@ import { GradeLevel } from '@app/_models';
 export class GradeLevelListComponent implements OnInit {
   gradeLevels: GradeLevel[] = [];
   loading = false;
-
   constructor(
     private gradeLevelService: GradeLevelService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
-    this.loadGradeLevels();
+    this.route.queryParams.subscribe(params => {
+      this.loadGradeLevels(params.academicLevel);
+    });
   }
 
-  loadGradeLevels() {
+  loadGradeLevels(academicLevel?: string) {
     this.loading = true;
-    this.gradeLevelService.getAll().subscribe({
+    this.gradeLevelService.getAll(academicLevel).subscribe({
       next: (data) => { this.gradeLevels = data; this.loading = false; },
       error: () => { this.loading = false; }
     });

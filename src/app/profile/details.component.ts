@@ -29,7 +29,7 @@ export class DetailsComponent implements OnInit {
         private accountService: AccountService,
         private gradeLevelService: GradeLevelService
 
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         if (this.account?.id) {
@@ -98,12 +98,12 @@ export class DetailsComponent implements OnInit {
 
     // ✅ Updated method to fetch gradeLevel and handle null safely
     getGradeLevelById(id: number): void {
-      this.gradeLevelService.getById(id).subscribe({
-        next: (data: GradeLevel) => {
-          this.gradeLevel = data;
-        },
-        error: (err: any) => console.error(err)
-      });
+        this.gradeLevelService.getById(id).subscribe({
+            next: (data: GradeLevel) => {
+                this.gradeLevel = data;
+            },
+            error: (err: any) => console.error(err)
+        });
     }
 
     toggleAllActivityLogs(): void {
@@ -122,7 +122,7 @@ export class DetailsComponent implements OnInit {
     }
 
     isManager(): boolean {
-        return this.account?.role === 'Staff';
+        return this.account?.role === 'Teacher' || this.account?.role === 'Coordinator';
     }
 
     isAdmin(): boolean {

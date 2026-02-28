@@ -54,7 +54,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 default:
                     // pass through any requests not handled above
                     return next.handle(request);
-            }    
+            }
         }
 
         // route functions
@@ -62,7 +62,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function authenticate() {
             const { email, password } = body;
             const account = accounts.find(x => x.email === email && x.password === password && x.isVerified);
-            
+
             if (!account) return error('Email or password is incorrect');
 
             // add refresh token to account
@@ -77,11 +77,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function refreshToken() {
             const refreshToken = getRefreshToken();
-            
+
             if (!refreshToken) return unauthorized();
 
             const account = accounts.find(x => x.refreshTokens.includes(refreshToken));
-            
+
             if (!account) return unauthorized();
 
             // replace old refresh token with a new one and save
@@ -97,10 +97,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function revokeToken() {
             if (!isAuthenticated()) return unauthorized();
-            
+
             const refreshToken = getRefreshToken();
             const account = accounts.find(x => x.refreshTokens.includes(refreshToken));
-            
+
             // revoke token and save
             account.refreshTokens = account.refreshTokens.filter((x: any) => x !== refreshToken);
             localStorage.setItem(accountsKey, JSON.stringify(accounts));
@@ -132,7 +132,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 // first registered account is an admin
                 account.role = Role.Admin;
             } else {
-                account.role = Role.User;
+                account.role = Role.Teacher;
             }
             account.dateCreated = new Date().toISOString();
             account.verificationToken = new Date().getTime().toString();
@@ -156,13 +156,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             return ok();
         }
-        
+
         function verifyEmail() {
             const { token } = body;
             const account = accounts.find(x => !!x.verificationToken && x.verificationToken === token);
-            
+
             if (!account) return error('Verification failed');
-            
+
             // set is verified flag to true if token is valid
             account.isVerified = true;
             localStorage.setItem(accountsKey, JSON.stringify(accounts));
@@ -173,13 +173,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function forgotPassword() {
             const { email } = body;
             const account = accounts.find(x => x.email === email);
-            
+
             // always return ok() response to prevent email enumeration
             if (!account) return ok();
-            
+
             // create reset token that expires after 24 hours
             account.resetToken = new Date().getTime().toString();
-            account.resetTokenExpires = new Date(Date.now() + 24*60*60*1000).toISOString();
+            account.resetTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
             localStorage.setItem(accountsKey, JSON.stringify(accounts));
 
             // display password reset email in alert
@@ -195,16 +195,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             return ok();
         }
-        
+
         function validateResetToken() {
             const { token } = body;
             const account = accounts.find(x =>
                 !!x.resetToken && x.resetToken === token &&
                 new Date() < new Date(x.resetTokenExpires)
             );
-            
+
             if (!account) return error('Invalid token');
-            
+
             return ok();
         }
 
@@ -214,9 +214,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 !!x.resetToken && x.resetToken === token &&
                 new Date() < new Date(x.resetTokenExpires)
             );
-            
+
             if (!account) return error('Invalid token');
-            
+
             // update password and remove reset token
             account.password = password;
             account.isVerified = true;
@@ -305,7 +305,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             localStorage.setItem(accountsKey, JSON.stringify(accounts));
             return ok();
         }
-        
+
         // helper functions
 
         function ok(body?: any) {
@@ -363,8 +363,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function generateJwtToken(account: any) {
             // create token that expires in 15 minutes
-            const tokenPayload = { 
-                exp: Math.round(new Date(Date.now() + 15*60*1000).getTime() / 1000),
+            const tokenPayload = {
+                exp: Math.round(new Date(Date.now() + 15 * 60 * 1000).getTime() / 1000),
                 id: account.id
             }
             return `fake-jwt-token.${btoa(JSON.stringify(tokenPayload))}`;
@@ -374,7 +374,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             const token = new Date().getTime().toString();
 
             // add token cookie that expires in 7 days
-            const expires = new Date(Date.now() + 7*24*60*60*1000).toUTCString();
+            const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
             document.cookie = `fakeRefreshToken=${token}; expires=${expires}; path=/`;
 
             return token;
@@ -391,6 +391,6 @@ export let fakeBackendProvider = {
     // use fake backend in place of Http service for backend-less development
     provide: HTTP_INTERCEPTORS,
     useClass: FakeBackendInterceptor,
-    multi: true   
+    multi: true
 };
 

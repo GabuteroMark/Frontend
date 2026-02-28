@@ -7,10 +7,14 @@ import { GradeLevel } from '@app/_models';
 export class GradeLevelService {
     private baseUrl = 'http://localhost:4000/api/grade-levels'; // ✅ match backend
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-    getAll(): Observable<GradeLevel[]> {
-        return this.http.get<GradeLevel[]>(this.baseUrl);
+    getAll(academicLevel?: string): Observable<GradeLevel[]> {
+        let url = this.baseUrl;
+        if (academicLevel) {
+            url += `?academicLevel=${encodeURIComponent(academicLevel)}`;
+        }
+        return this.http.get<GradeLevel[]>(url);
     }
 
     getById(id: number): Observable<GradeLevel> {

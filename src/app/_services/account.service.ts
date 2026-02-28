@@ -6,7 +6,7 @@ import { map, finalize } from 'rxjs/operators';
 
 import { environment } from '@environments/environment';
 import { Account } from '@app/_models';
-import { ActivityLog , ActivityLogsResponse } from '@app/_models/activity-log.model';
+import { ActivityLog, ActivityLogsResponse } from '@app/_models/activity-log.model';
 
 // Base URL for API calls
 const baseUrl = `${environment.apiUrl}/api/accounts`;
@@ -87,7 +87,7 @@ export class AccountService {
     resetPassword(token: string, password: string, confirmPassword: string) {
         return this.http.post(`${baseUrl}/reset-password`, { token, password, confirmPassword });
     }
-     
+
     getAllAccounts(): Observable<Account[]> {
         return this.http.get<Account[]>(baseUrl);
     }
@@ -95,7 +95,7 @@ export class AccountService {
     getAll() {
         return this.http.get<Account[]>(baseUrl);
     }
-    
+
     getById(id: string) {
         return this.http.get<Account>(`${baseUrl}/${id}`);
     }
@@ -109,20 +109,24 @@ export class AccountService {
             map(response => Array.isArray(response) ? response as ActivityLog[] : response.data || [])
         );
     }
-    
+
     getActivityLogs(AccountId: string, filters: any = {}): Observable<any[]> {
         return this.http.post<any[]>(`${baseUrl}/${AccountId}/activity`, filters);
     }
 
     update(id: string, params: any) {
-        return this.http.put(`${baseUrl}/${id}`, params)
-            .pipe(map((account: any) => {
-                if (account.id === this.accountValue?.id) {
-                    account = { ...this.accountValue, ...account };
+        return this.http.put<any>(`${baseUrl}/${id}`, params)
+            .pipe(map(response => {
+                // The API returns { message: '...', account: { ... } }
+                const updatedAccount = response.account || response;
+
+                // if the updated account is the current user, update the session
+                if (updatedAccount.id === this.accountValue?.id) {
+                    const account = { ...this.accountValue, ...updatedAccount };
                     this.accountSubject.next(account);
                     localStorage.setItem('account', JSON.stringify(account));
                 }
-                return account;
+                return response;
             }));
     }
 
