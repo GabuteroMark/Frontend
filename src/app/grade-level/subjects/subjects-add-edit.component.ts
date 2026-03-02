@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SubjectsService, Subject } from '@app/_services/subjects.service';
+import { GradeLevelService } from '@app/_services/grade-level.service';
 
 @Component({
   selector: 'app-subjects-add-edit',
@@ -12,6 +13,8 @@ export class SubjectsAddEditComponent implements OnInit {
   form!: FormGroup;
   subjectId?: number;
   gradeLevelId!: number;
+  gradeLevelName = '';
+  academicLevel = '';
 
   title = '';
   submitting = false;
@@ -19,9 +22,10 @@ export class SubjectsAddEditComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private subjectsService: SubjectsService,
+    private gradeLevelService: GradeLevelService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
 
@@ -34,12 +38,23 @@ export class SubjectsAddEditComponent implements OnInit {
 
     this.gradeLevelId = Number(gradeParam);
 
+    // Fetch parent grade level details
+    this.gradeLevelService.getById(this.gradeLevelId).subscribe(res => {
+      this.gradeLevelName = res.name;
+    });
+
     const subjectParam = this.route.snapshot.paramMap.get('subjectId');
     if (subjectParam) {
       this.subjectId = Number(subjectParam);
     }
 
-    this.title = this.subjectId ? 'Edit Subject' : 'Add Subject';
+    // Read query params for context
+    this.route.queryParams.subscribe(params => {
+      this.academicLevel = params.academicLevel || '';
+      this.title = this.subjectId
+        ? (this.academicLevel === 'Tertiary Education' ? 'Edit Year Level' : 'Edit Section')
+        : (this.academicLevel === 'Tertiary Education' ? 'Add Year Level' : 'Add Section');
+    });
 
     this.form = this.fb.group({
       name: ['', Validators.required]
@@ -58,8 +73,11 @@ export class SubjectsAddEditComponent implements OnInit {
 
     this.submitting = true;
 
+    const rawName = this.form.value.name || '';
+    const capitalizedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+
     const subject: Subject = {
-      name: this.form.value.name,
+      name: capitalizedName,
       gradeLevelId: this.gradeLevelId
     };
 

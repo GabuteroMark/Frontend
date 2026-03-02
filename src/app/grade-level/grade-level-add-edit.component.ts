@@ -26,11 +26,12 @@ export class GradeLevelAddEditComponent implements OnInit {
 
   ngOnInit(): void {
     const paramId = this.route.snapshot.paramMap.get('id');
+    const academicLevelParam = this.route.snapshot.queryParamMap.get('academicLevel');
     this.id = paramId ? Number(paramId) : undefined;
 
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
-      academicLevel: ['', Validators.required]
+      academicLevel: [academicLevelParam || '', Validators.required]
     });
 
     this.academicLevels = [
@@ -74,8 +75,10 @@ export class GradeLevelAddEditComponent implements OnInit {
       .pipe(finalize(() => this.submitting = false))
       .subscribe({
         next: () => {
-          // ✅ CORRECT ROUTE
-          this.router.navigate(['/grade-level']);
+          // ✅ REDIRECT WITH QUERY PARAMS
+          this.router.navigate(['/grade-level'], {
+            queryParams: { academicLevel: this.form.value.academicLevel }
+          });
         },
         error: (err) => {
           console.error('Save failed:', err);
@@ -85,7 +88,9 @@ export class GradeLevelAddEditComponent implements OnInit {
   }
 
   onCancel(): void {
-    // ✅ ALSO FIXED
-    this.router.navigate(['/grade-level']);
+    const academicLevel = this.form.value.academicLevel || this.route.snapshot.queryParamMap.get('academicLevel');
+    this.router.navigate(['/grade-level'], {
+      queryParams: { academicLevel: academicLevel }
+    });
   }
 }

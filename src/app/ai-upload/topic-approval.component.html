@@ -1,0 +1,67 @@
+<div class="container my-5">
+    <div class="card p-4">
+        <h3 class="card-title text-center mb-4">Admin: Topic Approval Dashboard</h3>
+
+        <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+        <div *ngIf="successMsg" class="alert alert-success">{{ successMsg }}</div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Teacher</th>
+                        <th>Grade / Section</th>
+                        <th>File Name</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                        <th>AI Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let req of requests">
+                        <td><strong>{{ req.firstName }} {{ req.lastName }}</strong></td>
+                        <td>{{ req.gradeLevelName }} / {{ req.subjectName }}</td>
+                        <td>{{ req.fileName }}</td>
+                        <td>{{ req.createdAt | date:'short' }}</td>
+                        <td>
+                            <span class="badge"
+                                [ngClass]="{'bg-warning': req.status === 'Pending', 'bg-success': req.status === 'Approved', 'bg-danger': req.status === 'Rejected'}">
+                                {{ req.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge"
+                                [ngClass]="{'bg-secondary': req.aiStatus === 'Idle', 'bg-info': req.aiStatus === 'Processing', 'bg-success': req.aiStatus === 'Completed', 'bg-danger': req.aiStatus === 'Failed'}">
+                                {{ req.aiStatus }}
+                            </span>
+                        </td>
+                        <td style="white-space: nowrap;">
+                            <button class="btn btn-sm btn-outline-info me-2" (click)="viewPDF(req)">
+                                📄 View
+                            </button>
+
+                            <ng-container *ngIf="req.status === 'Pending'">
+                                <button class="btn btn-sm btn-success me-2" [disabled]="loadingId === req.id"
+                                    (click)="approve(req)">
+                                    <span *ngIf="loadingId === req.id" class="spinner-border spinner-border-sm"></span>
+                                    {{ loadingId === req.id ? 'Approving...' : 'Approve & Generate' }}
+                                </button>
+                                <button class="btn btn-sm btn-danger" (click)="reject(req)">
+                                    Reject
+                                </button>
+                            </ng-container>
+
+                            <div *ngIf="req.aiStatus === 'Completed'" class="mt-1 small text-success">
+                                ✅ Questions Ready
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="requests.length === 0">
+                        <td colspan="7" class="text-center py-4 text-muted">No pending requests found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

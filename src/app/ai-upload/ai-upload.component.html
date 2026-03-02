@@ -3,26 +3,25 @@
 ================================ -->
 
 <style>
-
   /* Background */
   body {
     background: linear-gradient(135deg, #0f172a, #1e293b);
   }
-  
+
   /* Card */
   .card {
     border: none;
     border-radius: 20px;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(12px);
-    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
     transition: 0.3s ease;
   }
-  
+
   .card:hover {
     transform: translateY(-5px);
   }
-  
+
   /* Title */
   .card-title {
     font-size: 2rem;
@@ -31,9 +30,10 @@
     margin-bottom: 30px;
     background: linear-gradient(135deg, #2563eb, #10b981);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  
+
   /* Select & Input */
   .form-select,
   .form-control {
@@ -42,13 +42,13 @@
     border: 1px solid #e2e8f0;
     transition: 0.3s ease;
   }
-  
+
   .form-select:focus,
   .form-control:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
-  
+
   /* Generate Button */
   .btn-generate {
     background: linear-gradient(135deg, #2563eb, #3b82f6);
@@ -59,12 +59,12 @@
     transition: 0.3s ease;
     color: white;
   }
-  
+
   .btn-generate:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
   }
-  
+
   /* Download Button */
   .btn-download {
     background: linear-gradient(135deg, #16a34a, #22c55e);
@@ -75,12 +75,12 @@
     color: white;
     transition: 0.3s ease;
   }
-  
+
   .btn-download:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(34,197,94,0.4);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
   }
-  
+
   /* Question Panel */
   .questions-panel {
     max-height: 400px;
@@ -90,7 +90,7 @@
     border-radius: 15px;
     margin-top: 20px;
   }
-  
+
   /* Question Block */
   .question-block {
     background: white;
@@ -99,12 +99,12 @@
     margin-bottom: 15px;
     transition: 0.3s ease;
   }
-  
+
   .question-block:hover {
     background: #eef2ff;
     transform: translateY(-2px);
   }
-  
+
   /* List group style */
   .list-group-item {
     border: none;
@@ -113,138 +113,145 @@
     border-radius: 6px;
     transition: 0.2s ease;
   }
-  
+
   .list-group-item:hover {
     background-color: #e0f2fe;
   }
-  
+
   /* Generated PDFs list */
   .generated-pdfs {
     margin-top: 30px;
   }
-  
+
   .generated-pdfs .list-group-item {
     border-radius: 10px;
     margin-bottom: 8px;
   }
-  
+
   /* Alerts */
   .alert {
     border-radius: 10px;
     font-size: 14px;
   }
-  
-  </style>
-  
-  
-  <div class="container my-5">
-    <div class="card p-4">
-  
-      <h3 class="card-title">AI PDF Question Generator</h3>
-  
-      <!-- Grade Level & Subject -->
-      <div class="row g-3 mb-4">
-        <div class="col-md-6">
-          <label class="form-label">Grade Level</label>
-          <select class="form-select"
-                  [(ngModel)]="selectedGradeLevelId"
-                  (change)="onGradeLevelChange()">
-            <option value="">Select Grade Level</option>
-            <option *ngFor="let g of gradeLevels" [value]="g.id">
-              {{ g.name }}
-            </option>
-          </select>
-        </div>
-  
-        <div class="col-md-6">
-          <label class="form-label">Subject</label>
-          <select class="form-select"
-                  [(ngModel)]="selectedSubjectId"
-                  (change)="onSubjectChange()">
-            <option value="">Select Subject</option>
-            <option *ngFor="let s of subjects" [value]="s.id">
-              {{ s.name }}
-            </option>
-          </select>
-        </div>
+</style>
+
+
+<div class="container my-5">
+  <div class="card p-4">
+
+    <h3 class="card-title">AI PDF Topic Submission</h3>
+
+    <p class="text-center text-muted mb-4">
+      Upload your topic PDF below. It will be sent to the Admin for review.
+      Once approved, the AI will generate questions and you can download the PDF.
+    </p>
+
+    <!-- Hierarchical Selection -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <label class="form-label">Academic Level</label>
+        <select class="form-select" [(ngModel)]="selectedAcademicLevel" (change)="onAcademicLevelChange()">
+          <option value="">Select Academic Level</option>
+          <option *ngFor="let level of academicLevels" [value]="level">
+            {{ level }}
+          </option>
+        </select>
       </div>
-  
-      <!-- File Upload -->
-      <div class="row g-3 align-items-end mb-3">
-        <div class="col-md-8">
-          <label class="form-label">Upload PDF</label>
-          <input type="file"
-                 class="form-control"
-                 (change)="onFileSelected($event)" />
-        </div>
-  
-        <div class="col-md-4 d-grid">
-          <button class="btn btn-generate"
-                  (click)="generateQuestions()"
-                  [disabled]="loading">
-            {{ loading ? 'Generating...' : 'Generate Questions' }}
-          </button>
-        </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Grade Level</label>
+        <select class="form-select" [(ngModel)]="selectedGradeLevelId" (change)="onGradeLevelChange()"
+          [disabled]="!selectedAcademicLevel">
+          <option value="">Select Grade Level</option>
+          <option *ngFor="let g of filteredGradeLevels" [value]="g.id">
+            {{ g.name }}
+          </option>
+        </select>
       </div>
-  
-      <!-- Alerts -->
-      <div *ngIf="errorMsg" class="alert alert-danger">
-        {{ errorMsg }}
+
+      <div class="col-md-4">
+        <label class="form-label">Section/Year Level</label>
+        <select class="form-select" [(ngModel)]="selectedSubjectId" (change)="onSubjectChange()"
+          [disabled]="!selectedGradeLevelId">
+          <option value="">Select Section</option>
+          <option *ngFor="let s of subjects" [value]="s.id">
+            {{ s.name }}
+          </option>
+        </select>
       </div>
-  
-      <div *ngIf="successMsg" class="alert alert-success">
-        {{ successMsg }}
+    </div>
+
+    <!-- File Upload -->
+    <div class="row g-3 align-items-end mb-3">
+      <div class="col-md-8">
+        <label class="form-label">Upload PDF</label>
+        <input type="file" class="form-control" (change)="onFileSelected($event)" />
       </div>
-  
-      <!-- Download Latest PDF -->
-      <div *ngIf="downloadUrl" class="text-end">
-        <button class="btn btn-download"
-                (click)="downloadPDF()">
-          📥 Download PDF
+
+      <div class="col-md-4 d-grid">
+        <button class="btn btn-generate" (click)="submitTopicRequest()" [disabled]="loading">
+          {{ loading ? 'Submitting...' : 'Submit for Review' }}
         </button>
       </div>
-  
-      <!-- Questions Preview -->
-      <div *ngIf="generatedQuestions.length > 0"
-           class="questions-panel">
-  
-        <div *ngFor="let q of generatedQuestions; let i = index"
-             class="question-block">
-  
-          <h6>{{ i + 1 }}. {{ q.question }}</h6>
-  
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">A. {{ q.options.A }}</li>
-            <li class="list-group-item">B. {{ q.options.B }}</li>
-            <li class="list-group-item">C. {{ q.options.C }}</li>
-            <li class="list-group-item">D. {{ q.options.D }}</li>
-          </ul>
-  
-        </div>
-      </div>
-  
-      <!-- Generated PDFs List -->
-      <div *ngIf="generatedPDFs.length > 0"
-           class="generated-pdfs">
-  
-        <h5 class="mt-4 mb-3">Generated PDFs</h5>
-  
-        <ul class="list-group">
-          <li *ngFor="let pdf of generatedPDFs"
-              class="list-group-item d-flex justify-content-between align-items-center">
-  
-            {{ pdf.filePath.split('/').pop() }}
-  
-            <a class="btn btn-sm btn-outline-primary"
-               [href]="'http://localhost:5000' + pdf.downloadUrl"
-               target="_blank">
-              Download
-            </a>
-  
-          </li>
-        </ul>
-  
-      </div>
-  
     </div>
+
+    <!-- Alerts -->
+    <div *ngIf="errorMsg" class="alert alert-danger">
+      {{ errorMsg }}
+    </div>
+
+    <div *ngIf="successMsg" class="alert alert-success">
+      {{ successMsg }}
+    </div>
+
+    <!-- My Submissions Table -->
+    <div class="mt-5">
+      <h4 class="mb-3">My Topic Submissions</h4>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Date</th>
+              <th>File</th>
+              <th>Section</th>
+              <th>Approval Status</th>
+              <th>AI Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let req of myRequests">
+              <td>{{ req.createdAt | date:'short' }}</td>
+              <td>{{ req.fileName }}</td>
+              <td>{{ req.subjectName }}</td>
+              <td>
+                <span class="badge"
+                  [ngClass]="{'bg-warning': req.status === 'Pending', 'bg-success': req.status === 'Approved', 'bg-danger': req.status === 'Rejected'}">
+                  {{ req.status }}
+                </span>
+              </td>
+              <td>
+                <span class="badge"
+                  [ngClass]="{'bg-secondary': req.aiStatus === 'Idle', 'bg-info': req.aiStatus === 'Processing', 'bg-success': req.aiStatus === 'Completed', 'bg-danger': req.aiStatus === 'Failed'}">
+                  {{ req.aiStatus }}
+                </span>
+                <div *ngIf="req.remarks" class="small text-danger mt-1">{{ req.remarks }}</div>
+              </td>
+              <td>
+                <button *ngIf="req.aiStatus === 'Completed'" class="btn btn-sm btn-outline-primary"
+                  (click)="successMsg = 'Fetching PDF...'; loadMySubmissions()">
+                  Check Result
+                </button>
+                <span *ngIf="req.aiStatus !== 'Completed'" class="text-muted small">-</span>
+              </td>
+            </tr>
+            <tr *ngIf="myRequests.length === 0">
+              <td colspan="6" class="text-center text-muted py-4">No submissions found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
+</div>

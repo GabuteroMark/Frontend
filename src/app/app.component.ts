@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   branch?: any;  // Define the branch property
   gradeLevel: any;
   showAcademicLevels = false;
+  showMobileSidebar = false;
 
   constructor(
     private accountService: AccountService,
@@ -22,10 +23,11 @@ export class AppComponent implements OnInit {
   ) {
     this.accountService.account.subscribe(x => this.account = x);
 
-    // Auto-close menu when navigating away from grade-level pages
+    // Auto-close menu and sidebar when navigating
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
+      this.showMobileSidebar = false; // Always close sidebar on navigation
       if (!event.url.includes('/grade-level')) {
         this.showAcademicLevels = false;
       }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { GradeLevelService } from '@app/_services/grade-level.service';
 
 interface Subject {
   id: number;
@@ -22,6 +23,8 @@ export class SubjectsListComponent implements OnInit {
   subjects: Subject[] = [];
   loading = false;
   gradeLevelId = 0;
+  gradeLevelName = '';
+  academicLevel = '';
 
   showPdfModal = false;
   pdfsForSubject: SubjectPDF[] = [];
@@ -31,8 +34,9 @@ export class SubjectsListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private gradeLevelService: GradeLevelService
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('gradeLevelId');
@@ -42,6 +46,17 @@ export class SubjectsListComponent implements OnInit {
       return;
     }
     this.gradeLevelId = Number(id);
+
+    // Fetch parent grade level details
+    this.gradeLevelService.getById(this.gradeLevelId).subscribe(res => {
+      this.gradeLevelName = res.name;
+    });
+
+    // Read academicLevel from queryParams
+    this.route.queryParams.subscribe(params => {
+      this.academicLevel = params.academicLevel || '';
+    });
+
     this.loadSubjects();
   }
 
@@ -61,17 +76,21 @@ export class SubjectsListComponent implements OnInit {
   }
 
   addSubject(): void {
-    this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects/add`]);
+    this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects/add`], {
+      queryParams: { academicLevel: this.academicLevel }
+    });
   }
 
   editSubject(id?: number): void {
     if (!id) return;
-    this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects/edit/${id}`]);
+    this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects/edit/${id}`], {
+      queryParams: { academicLevel: this.academicLevel }
+    });
   }
 
   deleteSubject(id?: number): void {
     if (!id) return;
-    if (!confirm('Delete subject?')) return;
+    if (!confirm('Delete section?')) return;
 
     this.http.delete(`http://localhost:4000/api/grade-levels/${this.gradeLevelId}/subjects/${id}`)
       .subscribe({
@@ -113,6 +132,8 @@ export class SubjectsListComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/grade-level']);
+    this.router.navigate(['/grade-level'], {
+      queryParams: { academicLevel: this.academicLevel }
+    });
   }
 }

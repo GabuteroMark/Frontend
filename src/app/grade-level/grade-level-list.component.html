@@ -1,181 +1,276 @@
-<!-- ===============================
-     PREMIUM GRADE LEVEL TABLE
-================================ -->
-
 <style>
-  /* Container width */
-  .container {
-    max-width: 1000px;
+  /* PREMIUM GRADE LEVEL LIST STYLES */
+  .grade-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 0;
   }
 
-  /* Card redesign */
-  .card {
-    border: none;
-    border-radius: 18px;
+  .grade-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 28px;
+    padding: 35px;
+    text-align: center;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
-    transition: 0.3s ease;
+    color: #334155;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
   }
 
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 25px 55px rgba(0, 0, 0, 0.12);
+  .grade-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #0d6efd;
+    opacity: 0.9;
   }
 
-  /* Header */
-  .card-header {
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
-    border: none;
-    padding: 18px 22px;
-  }
-
-  .card-header h5 {
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-
-  /* Add Button */
-  .btn-add {
-    background: white;
-    color: #2563eb;
-    border-radius: 10px;
-    font-weight: 600;
-    padding: 6px 14px;
-    transition: 0.3s ease;
-  }
-
-  .btn-add:hover {
-    background: #f1f5f9;
-    transform: translateY(-2px);
-  }
-
-  /* Table */
-  .table {
-    margin: 0;
-  }
-
-  .table thead {
+  .grade-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(13, 110, 253, 0.12);
+    border-color: rgba(13, 110, 253, 0.3);
     background: #f8fafc;
+  }
+
+  .grade-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+    display: block;
+    color: #0d6efd;
+    filter: drop-shadow(0 4px 6px rgba(13, 110, 253, 0.15));
+  }
+
+  .grade-name {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #1e293b;
+  }
+
+  .btn-premium {
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-weight: 700;
     font-size: 14px;
-  }
-
-  .table tbody tr {
-    transition: 0.2s ease;
-  }
-
-  .table tbody tr:hover {
-    background-color: #f1f5ff;
-    transform: scale(1.01);
-  }
-
-  /* Action buttons */
-  .btn-edit {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    transition: all 0.3s ease;
     border: none;
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 13px;
-    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
   }
 
-  .btn-edit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
+  .btn-premium-subject {
+    background: #f0fdf4;
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.15);
   }
 
-  .btn-subject {
-    background: linear-gradient(135deg, #10b981, #059669);
-    border: none;
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 13px;
-    transition: 0.3s ease;
+  .btn-premium-subject:hover {
+    background: #16a34a;
+    color: #ffffff;
+    box-shadow: 0 8px 15px rgba(22, 163, 74, 0.2);
   }
 
-  .btn-subject:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+  /* SELECTION GRID STYLES (FROM HOME PAGE) */
+  .selection-view {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
   }
 
-  /* Empty state */
-  .empty-state {
-    padding: 40px;
-    color: #94a3b8;
-    font-size: 14px;
+  .selection-title {
+    font-weight: 800;
+    font-size: 2.5rem;
+    color: #0f172a;
+    margin-bottom: 10px;
+    text-align: center;
   }
 
-  /* Loading text */
-  .loading-state {
-    padding: 40px;
-    font-weight: 500;
+  .selection-subtitle {
+    color: #64748b;
+    margin-bottom: 40px;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .level-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 1100px;
+    justify-content: center;
+  }
+
+  .level-card {
+    background: white;
+    border-radius: 24px;
+    padding: 35px;
+    text-decoration: none;
+    color: #1e293b;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .level-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 45px rgba(13, 110, 253, 0.15);
+    border-color: #0d6efd;
+  }
+
+  .level-card::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: #0d6efd;
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+
+  .level-card:hover::after {
+    transform: scaleX(1);
+  }
+
+  .level-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+
+  .level-name {
+    font-weight: 800;
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+    color: #0f172a;
+  }
+
+  .level-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+  }
+
+  @media (max-width: 768px) {
+    .level-grid {
+      grid-template-columns: 1fr;
+      max-width: 350px;
+    }
+
+    .selection-title {
+      font-size: 2rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .level-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 </style>
 
+<!-- CASE 1: NO ACADEMIC LEVEL SELECTED (Show Selection Grid) -->
+<div *ngIf="!academicLevel" class="selection-view">
+  <h1 class="selection-title">Academic Level</h1>
+  <p class="selection-subtitle">Select a category to manage its curriculum</p>
 
-<div class="container mt-5">
-  <div class="card">
+  <div class="level-grid">
+    <!-- Primary Education -->
+    <a [routerLink]="['.']" [queryParams]="{ academicLevel: 'Primary Education' }" class="level-card">
+      <div class="level-icon">🎓</div>
+      <div class="level-name">Primary Education</div>
+      <div class="level-desc">Grade 1 to Grade 6</div>
+    </a>
 
-    <!-- Header -->
-    <div class="card-header text-white d-flex justify-content-between align-items-center">
-      <h5 class="mb-0">Grade Levels</h5>
+    <!-- Secondary -->
+    <a [routerLink]="['.']" [queryParams]="{ academicLevel: 'Secondary Education' }" class="level-card">
+      <div class="level-icon">📖</div>
+      <div class="level-name">Secondary Education</div>
+      <div class="level-desc">Grade 7 to Grade 10</div>
+    </a>
 
-      <a routerLink="add" class="btn btn-add btn-sm">
-        ➕ Add Grade Level
+    <!-- Senior High -->
+    <a [routerLink]="['.']" [queryParams]="{ academicLevel: 'Senior High School' }" class="level-card">
+      <div class="level-icon">🎒</div>
+      <div class="level-name">Senior High</div>
+      <div class="level-desc">Grade 11 to Grade 12</div>
+    </a>
+
+    <!-- Tertiary -->
+    <a [routerLink]="['.']" [queryParams]="{ academicLevel: 'Tertiary Education' }" class="level-card">
+      <div class="level-icon">📜</div>
+      <div class="level-name">Tertiary</div>
+      <div class="level-desc">Degree Programs</div>
+    </a>
+  </div>
+</div>
+
+<div *ngIf="academicLevel" class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-0 text-dark">{{ academicLevel }}</h2>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <a routerLink="/grade-level"
+        class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-bold shadow-sm border-0 bg-light">
+        ← Back to selection
+      </a>
+      <a *ngIf="academicLevel !== 'Primary Education' && academicLevel !== 'Secondary Education' && academicLevel !== 'Senior High School' && academicLevel !== 'Tertiary Education'"
+        [routerLink]="['add']" [queryParams]="{ academicLevel: academicLevel }"
+        class="btn btn-primary px-4 py-2 rounded-pill fw-bold shadow-sm">
+        ➕ Add New Level
       </a>
     </div>
+  </div>
 
-    <!-- Body -->
-    <div class="card-body p-0">
+  <div *ngIf="!loading" class="grade-grid">
+    <div *ngFor="let gradeLevel of gradeLevels" class="grade-card">
+      <div class="grade-icon">🎓</div>
+      <div class="grade-name">{{ gradeLevel.name }}</div>
 
-      <table class="table table-hover mb-0">
-
-        <thead>
-          <tr>
-            <th class="ps-4">Grade Level</th>
-            <th style="width: 260px;">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-          <!-- Loading -->
-          <tr *ngIf="loading">
-            <td colspan="2" class="text-center loading-state">
-              ⏳ Loading grade levels...
-            </td>
-          </tr>
-
-          <!-- Data -->
-          <tr *ngFor="let gradeLevel of gradeLevels">
-            <td class="ps-4 fw-medium">
-              {{ gradeLevel.name }}
-            </td>
-
-            <td>
-              <a class="btn btn-sm btn-edit me-2 text-white" [routerLink]="['edit', gradeLevel.id]">
-                ✏️ Edit
-              </a>
-
-              <a class="btn btn-sm btn-subject text-white" [routerLink]="[gradeLevel.id, 'subjects']">
-                📘 Subjects
-              </a>
-            </td>
-          </tr>
-
-          <!-- Empty -->
-          <tr *ngIf="!loading && gradeLevels.length === 0">
-            <td colspan="2" class="text-center empty-state">
-              📭 No grade levels found
-            </td>
-          </tr>
-
-        </tbody>
-
-      </table>
-
+      <div class="grade-actions">
+        <a *ngIf="academicLevel !== 'Primary Education' && academicLevel !== 'Secondary Education' && academicLevel !== 'Senior High School' && academicLevel !== 'Tertiary Education'"
+          class="btn-premium btn-premium-edit" [routerLink]="['edit', gradeLevel.id]"
+          [queryParams]="{ academicLevel: academicLevel }">
+          <span>✏️</span> Edit
+        </a>
+        <a class="btn-premium btn-premium-subject" [routerLink]="[gradeLevel.id, 'subjects']"
+          [queryParams]="{ academicLevel: academicLevel }">
+          <span *ngIf="academicLevel !== 'Tertiary Education'">📂</span>
+          <span *ngIf="academicLevel === 'Tertiary Education'">📅</span>
+          {{ academicLevel === 'Tertiary Education' ? 'Year Level' : 'Section' }}
+        </a>
+      </div>
     </div>
+  </div>
 
+  <!-- EMPTY STATE -->
+  <div *ngIf="!loading && gradeLevels.length === 0" class="text-center py-5">
+    <div class="display-1 text-muted opacity-25 mb-4">📭</div>
+    <h4 class="text-secondary fw-bold">No Records Found</h4>
+    <p class="text-muted">There are no grade levels currently registered for this academic level.</p>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Retrieving data...</p>
   </div>
 </div>

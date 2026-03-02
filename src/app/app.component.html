@@ -24,7 +24,70 @@
     padding: 30px 20px;
     display: flex;
     flex-direction: column;
-    z-index: 1000;
+    z-index: 2000;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ===============================
+     RESPONSIVE SIDEBAR
+  ================================ */
+  @media (max-width: 991px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+
+    .sidebar.mobile-show {
+      transform: translateX(0);
+    }
+
+    .main-content {
+      margin-left: 0 !important;
+      padding-top: 60px !important;
+    }
+  }
+
+  /* Hamburger Toggle */
+  .sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 2500;
+    background: #0f172a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+
+  @media (max-width: 991px) {
+    .sidebar-toggle {
+      display: flex;
+    }
+  }
+
+  /* Sidebar Backdrop (Mobile Only) */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 1500;
+  }
+
+  @media (max-width: 991px) {
+    .sidebar-backdrop.mobile-show {
+      display: block;
+    }
   }
 
   /* ===============================
@@ -115,7 +178,7 @@
   .main-content {
     flex-grow: 1;
     margin-left: 250px;
-    padding: 20px;
+    padding: 0 20px 20px 20px;
   }
 
   /* Dissolve Effect Styles */
@@ -125,125 +188,25 @@
     height: 100%;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .sidebar-content.dissolve {
-    filter: blur(8px) grayscale(0.5);
-    opacity: 0.3;
-    pointer-events: none;
-  }
-
-  /* Floating Center Menu Styles */
-  .floating-center-menu {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 210px;
-    z-index: 2100;
-    pointer-events: auto;
-  }
-
-  .menu-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 15px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-    animation: menuEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .menu-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 20px;
-    padding: 0 5px;
-  }
-
-  .close-icon {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .close-icon:hover {
-    background: rgba(239, 68, 68, 0.4);
-    transform: rotate(90deg);
-  }
-
-  .menu-options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .menu-opt {
-    color: #e2e8f0;
-    text-decoration: none;
-    padding: 12px 15px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-  }
-
-  .menu-opt:hover {
-    background: rgba(56, 189, 248, 0.2);
-    color: #38bdf8;
-    transform: translateX(8px);
-  }
-
-  .opt-icon {
-    margin-right: 12px;
-    font-size: 16px;
-  }
-
-  .dissolve-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    z-index: 1500;
-  }
-
-  @keyframes menuEntrance {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
-  }
 </style>
 
 
 <div class="app-container" [ngClass]="{ 'bg-light': account }">
 
-  <!-- SIDEBAR (Shown for all logged-in users) -->
-  <nav *ngIf="account" class="sidebar">
+  <!-- Mobile Sidebar Toggle (Hamburger) -->
+  <button *ngIf="account" class="sidebar-toggle" (click)="showMobileSidebar = !showMobileSidebar">
+    ☰
+  </button>
 
-    <!-- SIDEBAR CONTENT WRAPPER (Blurs when menu is open) -->
-    <div class="sidebar-content" [class.dissolve]="showAcademicLevels">
+  <!-- SIDEBAR BACKDROP (Mobile Only) -->
+  <div *ngIf="account" class="sidebar-backdrop" [class.mobile-show]="showMobileSidebar"
+    (click)="showMobileSidebar = false"></div>
+
+  <!-- SIDEBAR (Shown for all logged-in users) -->
+  <nav *ngIf="account" class="sidebar" [class.mobile-show]="showMobileSidebar">
+
+    <!-- SIDEBAR CONTENT WRAPPER -->
+    <div class="sidebar-content">
 
       <div class="sidebar-title">
         {{ account.role === Role.Admin ? 'ADMIN PANEL' : 'DASHBOARD' }}
@@ -254,8 +217,8 @@
       </a>
 
       <!-- Academic Level Trigger -->
-      <a *ngIf="account.role === Role.Admin" href="javascript:void(0)" (click)="showAcademicLevels = true"
-        class="nav-link d-flex justify-content-between align-items-center">
+      <a *ngIf="account.role === Role.Admin" routerLink="/grade-level" routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }" class="nav-link d-flex justify-content-between align-items-center">
         Academic Level
       </a>
 
@@ -264,52 +227,25 @@
         Manage Accounts
       </a>
 
+      <a *ngIf="account.role === Role.Admin" routerLink="/ai-upload/topic-approval" routerLinkActive="active-link"
+        class="nav-link">
+        Topic Approvals
+      </a>
+
       <a *ngIf="account.role === Role.Admin" routerLink="/profile" routerLinkActive="active-link" class="nav-link">
         Profile
       </a>
 
-      <a *ngIf="account.role === Role.Admin" routerLink="/grade-level" routerLinkActive="active-link" class="nav-link">
-        Databank
-      </a>
 
       <a *ngIf="account.role === Role.Admin || account.role === Role.Teacher || account.role === Role.Coordinator"
         routerLink="/ai-upload" routerLinkActive="active-link" class="nav-link">
-        Generate Question
+        Upload Topics
       </a>
 
       <button (click)="logout()" class="logout-btn">
         Logout
       </button>
     </div>
-
-    <!-- Floating Center Menu (Academic Levels) -->
-    <div *ngIf="showAcademicLevels" class="floating-center-menu">
-      <div class="menu-card">
-        <div class="menu-header">
-          <span>Academic Level</span>
-          <button class="close-icon" (click)="showAcademicLevels = false">×</button>
-        </div>
-
-        <div class="menu-options">
-          <a [routerLink]="['/grade-level']" [queryParams]="{ academicLevel: 'Primary Education' }" class="menu-opt">
-            Primary Education
-          </a>
-          <a [routerLink]="['/grade-level']" [queryParams]="{ academicLevel: 'Secondary Education' }" class="menu-opt">
-            Secondary Education
-          </a>
-          <a [routerLink]="['/grade-level']" [queryParams]="{ academicLevel: 'Senior High School' }" class="menu-opt">
-            Senior High School
-          </a>
-          <a [routerLink]="['/grade-level']" [queryParams]="{ academicLevel: 'Tertiary Education' }" class="menu-opt">
-            Tertiary Education
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Backdrop for Dissolve Effect -->
-    <div *ngIf="showAcademicLevels" class="dissolve-backdrop" (click)="showAcademicLevels = false"></div>
-
   </nav>
 
   <!-- MAIN CONTENT -->
@@ -322,4 +258,5 @@
     <router-outlet></router-outlet>
 
   </div>
+
 </div>

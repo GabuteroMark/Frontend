@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AIQuestionService, GradeLevel, Subject, Question } from './ai-question.service';
+import { AIQuestionService, GradeLevel, Subject, Question, TopicRequest } from './ai-question.service';
+import { AccountService } from '@app/_services';
 
 @Component({
   selector: 'app-ai-upload',
@@ -7,42 +8,76 @@ import { AIQuestionService, GradeLevel, Subject, Question } from './ai-question.
 })
 export class AIUploadComponent implements OnInit {
   selectedFile: File | null = null;
+  academicLevels: string[] = ['Primary Education', 'Secondary Education', 'Senior High School', 'Tertiary Education'];
+  selectedAcademicLevel: string = '';
   gradeLevels: GradeLevel[] = [];
+  filteredGradeLevels: GradeLevel[] = [];
   selectedGradeLevelId: number | null = null;
   subjects: Subject[] = [];
   selectedSubjectId: number | null = null;
   loading = false;
   errorMsg = '';
+  successMsg = '';
 
-  generatedQuestions: Question[] = [];
-  downloadUrl: string = '';
+  // For submissions list
+  myRequests: TopicRequest[] = [];
 
-  // ✅ Added property to store generated PDFs
-  generatedPDFs: any[] = [];
-
-  // ✅ Added property for success message / indicator
-  successMsg: string = '';
-
-  constructor(private aiService: AIQuestionService) {}
+  constructor(
+    private aiService: AIQuestionService,
+    private accountService: AccountService
+  ) { }
 
   ngOnInit(): void {
     this.loadGradeLevels();
+    this.loadMySubmissions();
   }
 
   loadGradeLevels() {
     this.aiService.getGradeLevels().subscribe({
-      next: levels => this.gradeLevels = levels,
+      next: levels => {
+        this.gradeLevels = levels;
+        this.filterGradeLevels();
+      },
       error: err => console.error(err)
     });
+  }
+
+  filterGradeLevels() {
+    if (!this.selectedAcademicLevel) {
+      this.filteredGradeLevels = [];
+    } else {
+      this.filteredGradeLevels = this.gradeLevels.filter((g: GradeLevel) =>
+        g.academicLevel?.trim().toLowerCase() === this.selectedAcademicLevel.trim().toLowerCase()
+      );
+    }
+  }
+
+  loadMySubmissions() {
+    const account = this.accountService.accountValue;
+    if (!account) return;
+
+    this.aiService.getTopicRequests({ accountId: Number(account.id), role: account.role })
+      .subscribe({
+        next: requests => this.myRequests = requests,
+        error: err => console.error(err)
+      });
+  }
+
+  onAcademicLevelChange() {
+    this.selectedGradeLevelId = null;
+    this.selectedSubjectId = null;
+    this.subjects = [];
+    this.filteredGradeLevels = [];
+    this.successMsg = '';
+    this.errorMsg = '';
+    this.filterGradeLevels();
   }
 
   onGradeLevelChange() {
     this.selectedSubjectId = null;
     this.subjects = [];
-    this.generatedQuestions = [];
-    this.downloadUrl = '';
-    this.generatedPDFs = [];
-    this.successMsg = ''; // ✅ clear success message when changing grade level
+    this.successMsg = '';
+    this.errorMsg = '';
     if (!this.selectedGradeLevelId) return;
 
     this.aiService.getSubjects(this.selectedGradeLevelId).subscribe({
@@ -52,71 +87,38 @@ export class AIUploadComponent implements OnInit {
   }
 
   onSubjectChange() {
-    this.generatedQuestions = [];
-    this.downloadUrl = '';
-    this.successMsg = ''; // ✅ clear success message when changing subject
-    this.loadGeneratedPDFs(); // ✅ load PDFs automatically for this subject
+    this.successMsg = '';
+    this.errorMsg = '';
   }
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0] || null;
   }
 
-  generateQuestions() {
-    if (!this.selectedFile || !this.selectedGradeLevelId || !this.selectedSubjectId) {
+  submitTopicRequest() {
+    const account = this.accountService.accountValue;
+    if (!this.selectedFile || !this.selectedGradeLevelId || !this.selectedSubjectId || !account) {
       this.errorMsg = 'Please select file, grade level, and subject';
       return;
     }
 
     this.loading = true;
     this.errorMsg = '';
-    this.successMsg = ''; // ✅ reset success message while generating
+    this.successMsg = '';
 
-    this.aiService.uploadPDF(this.selectedFile, this.selectedGradeLevelId, this.selectedSubjectId)
+    this.aiService.submitTopicRequest(this.selectedFile, Number(account.id), this.selectedGradeLevelId, this.selectedSubjectId)
       .subscribe({
         next: res => {
-          this.generatedQuestions = res.questions;
-          this.downloadUrl = res.downloadUrl;
           this.loading = false;
-
-          // ✅ Show success message / indicator
-          this.successMsg = '✅ PDF generated successfully!';
-
-          // ✅ refresh PDF list automatically for subject
-          this.loadGeneratedPDFs();
+          this.successMsg = '✅ Topic submitted for Admin approval successfully!';
+          this.selectedFile = null;
+          this.loadMySubmissions();
         },
         error: err => {
-          this.errorMsg = 'Server error generating PDF';
+          this.errorMsg = 'Server error submitting topic';
           console.error(err);
           this.loading = false;
         }
-      });
-  }
-
-  downloadPDF() {
-    if (!this.downloadUrl) return;
-    const link = document.createElement('a');
-    link.href = `http://localhost:5000${this.downloadUrl}`;
-    link.download = 'Generated_Questions.pdf';
-    link.click();
-  }
-
-  // ✅ New function to load generated PDFs for selected subject
-  loadGeneratedPDFs() {
-    if (!this.selectedSubjectId) return;
-
-    this.aiService.getGeneratedPDFs(this.selectedSubjectId)
-      .subscribe({
-        next: pdfs => {
-          this.generatedPDFs = pdfs;
-
-          // ✅ if PDFs exist, show indicator automatically
-          if (pdfs.length > 0 && !this.successMsg) {
-            this.successMsg = '✅ Latest PDF is ready for download';
-            this.downloadUrl = pdfs[0].downloadUrl;
-          }
-        },
-        error: err => console.error(err)
       });
   }
 }
