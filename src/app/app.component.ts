@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private gradeLevelService: GradeLevelService,
-    private router: Router
+    public router: Router
   ) {
     this.accountService.account.subscribe(x => this.account = x);
 

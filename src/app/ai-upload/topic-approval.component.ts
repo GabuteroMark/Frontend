@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AIQuestionService, TopicRequest } from './ai-question.service';
 import { AccountService } from '@app/_services';
 import { Role } from '@app/_models';
@@ -15,7 +16,8 @@ export class TopicApprovalComponent implements OnInit {
 
     constructor(
         private aiService: AIQuestionService,
-        private accountService: AccountService
+        private accountService: AccountService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -23,7 +25,8 @@ export class TopicApprovalComponent implements OnInit {
     }
 
     laodRequests() {
-        this.aiService.getTopicRequests({ role: Role.Admin })
+        const role = this.accountService.accountValue?.role;
+        this.aiService.getTopicRequests({ role: role })
             .subscribe({
                 next: res => this.requests = res,
                 error: err => console.error(err)
@@ -63,8 +66,24 @@ export class TopicApprovalComponent implements OnInit {
     }
 
     viewPDF(req: TopicRequest) {
-        // In a real app we'd open a viewer, for now we just link to it if we had a direct download for raw uploads
-        // For now, raw uploads aren't directly served by static /download yet, but we'll assume they are accessible
         window.open(`http://localhost:5000/download/requests/${req.fileName.split('/').pop()}`, '_blank');
+    }
+
+    viewGeneratedPDF(req: any) {
+        console.log('Navigating to subject with context:', {
+            gradeLevelId: req.gradeLevelId,
+            sectionId: req.sectionId,
+            subjectId: req.subjectId,
+            academicLevel: req.academicLevel,
+            sectionName: req.sectionName
+        });
+
+        this.router.navigate([`/grade-level/${req.gradeLevelId}/sections/${req.sectionId}/subjects`], {
+            queryParams: {
+                academicLevel: req.academicLevel,
+                sectionName: req.sectionName,
+                openPdfModal: req.subjectId
+            }
+        });
     }
 }

@@ -9,7 +9,7 @@ const routes: Routes = [
   { path: 'edit/:id', component: GradeLevelAddEditComponent },
 
   {
-    path: ':gradeLevelId/subjects',
+    path: ':gradeLevelId/sections',
     loadChildren: () =>
       import('./subjects/subjects.module').then(m => m.SubjectsModule)
   }
@@ -19,4 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class GradeLevelRoutingModule {}
+export class GradeLevelRoutingModule { }

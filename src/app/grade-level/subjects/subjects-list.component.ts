@@ -1,40 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { SectionService, Section } from '@app/_services/section.service';
 import { GradeLevelService } from '@app/_services/grade-level.service';
-
-interface Subject {
-  id: number;
-  name: string;
-}
-
-interface SubjectPDF {
-  id: number;
-  name: string;
-  downloadUrl: string;
-  createdAt: string;
-}
 
 @Component({
   selector: 'app-subjects-list',
   templateUrl: './subjects-list.component.html'
 })
 export class SubjectsListComponent implements OnInit {
-  subjects: Subject[] = [];
+  sections: Section[] = [];
   loading = false;
   gradeLevelId = 0;
   gradeLevelName = '';
   academicLevel = '';
 
-  showPdfModal = false;
-  pdfsForSubject: SubjectPDF[] = [];
-  selectedSubjectName = '';
-  loadingPDFs = false; // ✅ loading indicator for PDFs
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
+    private sectionService: SectionService,
     private gradeLevelService: GradeLevelService
   ) { }
 
@@ -52,20 +35,19 @@ export class SubjectsListComponent implements OnInit {
       this.gradeLevelName = res.name;
     });
 
-    // Read academicLevel from queryParams
     this.route.queryParams.subscribe(params => {
       this.academicLevel = params.academicLevel || '';
     });
 
-    this.loadSubjects();
+    this.loadSections();
   }
 
-  loadSubjects(): void {
+  loadSections(): void {
     this.loading = true;
-    this.http.get<Subject[]>(`http://localhost:4000/api/grade-levels/${this.gradeLevelId}/subjects`)
+    this.sectionService.getAll(this.gradeLevelId)
       .subscribe({
         next: (res) => {
-          this.subjects = res || [];
+          this.sections = res || [];
           this.loading = false;
         },
         error: (err) => {
@@ -75,60 +57,34 @@ export class SubjectsListComponent implements OnInit {
       });
   }
 
-  addSubject(): void {
-    this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects/add`], {
+  addSection(): void {
+    this.router.navigate([`/grade-level/${this.gradeLevelId}/sections/add`], {
       queryParams: { academicLevel: this.academicLevel }
     });
   }
 
-  editSubject(id?: number): void {
+  editSection(id?: number): void {
     if (!id) return;
-    this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects/edit/${id}`], {
+    this.router.navigate([`/grade-level/${this.gradeLevelId}/sections/edit/${id}`], {
       queryParams: { academicLevel: this.academicLevel }
     });
   }
 
-  deleteSubject(id?: number): void {
+  deleteSection(id?: number): void {
     if (!id) return;
     if (!confirm('Delete section?')) return;
 
-    this.http.delete(`http://localhost:4000/api/grade-levels/${this.gradeLevelId}/subjects/${id}`)
+    this.sectionService.delete(this.gradeLevelId, id)
       .subscribe({
-        next: () => this.loadSubjects(),
+        next: () => this.loadSections(),
         error: err => console.error(err)
       });
   }
 
-  viewSubjectPDFs(subjectId: number, subjectName: string) {
-    this.selectedSubjectName = subjectName;
-    this.showPdfModal = true;
-    this.pdfsForSubject = [];
-    this.loadingPDFs = true;
-
-    // ✅ Fetch PDFs for this subject
-    this.http.get<SubjectPDF[]>(`http://localhost:4000/api/subjects/${subjectId}/pdfs`)
-      .subscribe({
-        next: (res) => {
-          this.pdfsForSubject = res || [];
-          this.loadingPDFs = false;
-        },
-        error: (err) => {
-          console.error(err);
-          this.pdfsForSubject = [];
-          this.loadingPDFs = false;
-        }
-      });
-  }
-
-  closePdfModal() {
-    this.showPdfModal = false;
-  }
-
-  downloadPDF(pdf: SubjectPDF) {
-    const link = document.createElement('a');
-    link.href = `http://localhost:4000${pdf.downloadUrl}`;
-    link.download = pdf.name;
-    link.click();
+  viewSubjects(section: Section): void {
+    this.router.navigate([`/grade-level/${this.gradeLevelId}/sections/${section.id}/subjects`], {
+      queryParams: { academicLevel: this.academicLevel, sectionName: section.name }
+    });
   }
 
   goBack(): void {

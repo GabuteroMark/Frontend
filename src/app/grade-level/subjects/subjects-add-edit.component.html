@@ -1,141 +1,161 @@
-<!-- ===============================
-     PREMIUM SUBJECT FORM
-================================ -->
-
 <style>
-  /* Container width */
-  .container {
-    max-width: 600px;
+  .form-container {
+    padding: 3rem 1.5rem;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
   }
 
-  /* Card */
-  .card {
-    border: none;
-    border-radius: 20px;
-    overflow: hidden;
+  .premium-card {
+    width: 100%;
+    max-width: 550px;
     background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
-    transition: 0.3s ease;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 32px;
+    box-shadow: 0 40px 80px -15px rgba(30, 27, 75, 0.15);
+    overflow: hidden;
   }
 
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 25px 55px rgba(0, 0, 0, 0.12);
-  }
-
-  /* Header */
-  .card-header {
-    background: linear-gradient(135deg, #059669, #10b981);
-    border: none;
-    padding: 20px;
+  .premium-header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    padding: 2.5rem;
     text-align: center;
+    color: white;
   }
 
-  .card-header h5 {
-    font-weight: 600;
-    letter-spacing: 1px;
-    font-size: 18px;
+  .premium-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
   }
 
-  /* Labels */
-  .form-label {
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.5px;
+  .premium-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  /* Input */
-  .form-control {
-    border-radius: 12px;
-    padding: 12px 14px;
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
-    font-size: 14px;
+  .premium-body {
+    padding: 2.5rem;
   }
 
-  .form-control:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  /* Form Elements */
+  .label-elite {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    display: block;
   }
 
-  /* Validation text */
-  .text-danger.small {
-    margin-top: 6px;
+  .input-elite {
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    color: #1e293b;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+  }
+
+  .input-elite:focus {
+    background: white;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    outline: none;
+  }
+
+  .input-elite::placeholder {
+    color: #94a3b8;
   }
 
   /* Buttons */
-  .btn-success {
-    background: linear-gradient(135deg, #059669, #10b981);
+  .btn-group-elite {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .btn-save-elite {
+    flex: 2;
+    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    color: white;
     border: none;
-    border-radius: 10px;
-    padding: 10px 22px;
-    font-weight: 600;
-    transition: 0.3s ease;
+    border-radius: 16px;
+    padding: 1rem;
+    font-weight: 700;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
-  .btn-success:hover {
+  .btn-save-elite:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
   }
 
-  .btn-outline-secondary {
-    border-radius: 10px;
-    padding: 10px 22px;
-    transition: 0.3s ease;
-  }
-
-  .btn-outline-secondary:hover {
+  .btn-cancel-elite {
+    flex: 1;
     background: #f1f5f9;
-    transform: translateY(-2px);
+    color: #475569;
+    border: none;
+    border-radius: 16px;
+    padding: 1rem;
+    font-weight: 700;
+    transition: 0.2s;
   }
 
-  /* Spinner alignment */
-  .spinner-border-sm {
-    vertical-align: middle;
+  .btn-cancel-elite:hover:not(:disabled) {
+    background: #e2e8f0;
   }
 </style>
 
-
-<div class="container mt-5">
-  <div class="card">
-
-    <!-- Header -->
-    <div class="card-header text-white">
-      <span class="text-white-50 small fw-normal">{{ gradeLevelName }}</span><br>
-      <h5 class="mb-0">{{ title }}</h5>
+<div class="form-container">
+  <div class="premium-card shadow-2xl">
+    <div class="premium-header">
+      <span class="premium-subtitle d-block mb-1">{{ gradeLevelName }}</span>
+      <h5 class="premium-title">{{ title }}</h5>
     </div>
 
-    <!-- Body -->
-    <div class="card-body p-4">
+    <div class="premium-body">
       <form [formGroup]="form" (ngSubmit)="submit()">
 
-        <div class="mb-4">
-          <label class="form-label">{{ academicLevel === 'Tertiary Education' ? 'Year Level Name' : 'Section Name'
-            }}</label>
-          <input class="form-control" formControlName="name"
+        <div class="mb-5">
+          <label class="label-elite">
+            {{ academicLevel === 'Tertiary Education' ? 'Academic Year Designation' : 'Sectional Assignment' }}
+          </label>
+          <input class="input-elite" formControlName="name"
             [placeholder]="academicLevel === 'Tertiary Education' ? 'e.g. 1st Year College' : 'e.g. Section A'" />
 
-          <div class="text-danger small" *ngIf="form.controls.name.invalid && form.controls.name.touched">
-            {{ academicLevel === 'Tertiary Education' ? 'Year level name' : 'Section name' }} is required
+          <div class="text-danger small mt-2 fw-medium"
+            *ngIf="form.controls.name.invalid && form.controls.name.touched">
+            <i class="bi bi-exclamation-circle me-1"></i>
+            {{ academicLevel === 'Tertiary Education' ? 'Year level name' : 'Section name' }} is mandatory
           </div>
         </div>
 
-        <div class="d-flex gap-3">
-          <button type="submit" class="btn btn-success" [disabled]="submitting || form.invalid">
-
-            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2">
-            </span>
-            Save
+        <div class="btn-group-elite">
+          <button type="submit" class="btn-save-elite" [disabled]="submitting || form.invalid">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
+            {{ submitting ? 'Processing...' : 'Save Changes' }}
           </button>
 
-          <button type="button" class="btn btn-outline-secondary" (click)="cancel()">
-            Cancel
+          <button type="button" class="btn-cancel-elite" (click)="cancel()">
+            Discard
           </button>
         </div>
 
       </form>
     </div>
-
   </div>
 </div>

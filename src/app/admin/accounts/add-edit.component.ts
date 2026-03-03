@@ -31,7 +31,7 @@ export class AddEditComponent implements OnInit {
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
-            phoneNumber:['', [Validators.required, Validators.pattern(/^(09|\+639)\d{9}$/)]],
+            phoneNumber: ['', [Validators.required, Validators.pattern(/^(09|\+639)\d{9}$/)]],
             role: ['', Validators.required],
             // password only required in add mode
             password: ['', [Validators.minLength(6), ...(!this.id ? [Validators.required] : [])]],
@@ -56,6 +56,10 @@ export class AddEditComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
+
+    get returnUrl() {
+        return this.router.url.includes('/coordinator') ? '/coordinator/accounts' : '/admin/accounts';
+    }
 
     onSubmit() {
         this.submitted = true;
@@ -86,7 +90,7 @@ export class AddEditComponent implements OnInit {
             .subscribe({
                 next: () => {
                     this.alertService.success(message, { keepAfterRouteChange: true });
-                    this.router.navigateByUrl('/admin/accounts');
+                    this.router.navigateByUrl(this.returnUrl);
                 },
                 error: error => {
                     this.alertService.error(error);

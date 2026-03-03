@@ -1,0 +1,257 @@
+<style>
+    .dashboard-container {
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 80vh;
+        border-radius: 30px;
+    }
+
+    .welcome-section {
+        margin-bottom: 3rem;
+    }
+
+    .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 24px;
+        padding: 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+    }
+
+    .stat-primary::before {
+        background: #2563eb;
+    }
+
+    .stat-success::before {
+        background: #10b981;
+    }
+
+    .stat-warning::before {
+        background: #f59e0b;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .bg-blue-light {
+        background: rgba(37, 99, 235, 0.1);
+        color: #2563eb;
+    }
+
+    .bg-emerald-light {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
+
+    .bg-amber-light {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    /* Quick Actions */
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .action-btn {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.25rem;
+        text-align: left;
+        transition: 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        text-decoration: none !important;
+    }
+
+    .action-btn:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        transform: scale(1.02);
+    }
+
+    .action-icon {
+        font-size: 1.25rem;
+        color: #475569;
+    }
+
+    .action-text {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .action-desc {
+        font-size: 0.8rem;
+        color: #94a3b8;
+    }
+
+    /* MEDIA QUERIES */
+    @media (max-width: 992px) {
+        .welcome-title {
+            font-size: 2.25rem;
+        }
+
+        .dashboard-container {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .welcome-title {
+            font-size: 1.75rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-section {
+            text-align: center;
+        }
+
+        .dashboard-container {
+            padding: 1rem;
+        }
+
+        .action-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-container shadow-sm mt-4">
+    <div class="welcome-section">
+        <h1 class="welcome-title">Coordinator Hub</h1>
+        <p class="text-muted fw-medium">Welcome back! Here's what's happening with the curriculum.</p>
+    </div>
+
+    <!-- Statistics Overview -->
+    <div class="stats-grid">
+        <div class="stat-card stat-warning">
+            <div class="stat-icon bg-amber-light text-warning">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="stat-value">Pending</div>
+            <div class="stat-label">Topics awaiting review</div>
+        </div>
+
+        <div class="stat-card stat-primary">
+            <div class="stat-icon bg-blue-light text-primary">
+                <i class="bi bi-journal-check"></i>
+            </div>
+            <div class="stat-value">Active</div>
+            <div class="stat-label">Approved subjects</div>
+        </div>
+
+        <div class="stat-card stat-success">
+            <div class="stat-icon bg-emerald-light text-success">
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="stat-value">Schools</div>
+            <div class="stat-label">Connected branches</div>
+        </div>
+    </div>
+
+    <!-- Quick Access -->
+    <div class="mt-4">
+        <h2 class="section-title">
+            <i class="bi bi-lightning-charge text-primary"></i>
+            Quick Management
+        </h2>
+        <div class="action-grid">
+            <a routerLink="/ai-upload/approve" class="action-btn shadow-sm">
+                <i class="bi bi-clipboard-check action-icon"></i>
+                <div>
+                    <div class="action-text">Topic Approvals</div>
+                    <div class="action-desc">Review and approve PDF topics</div>
+                </div>
+            </a>
+
+            <a routerLink="/grade-level" class="action-btn shadow-sm">
+                <i class="bi bi-grid-3x3-gap action-icon"></i>
+                <div>
+                    <div class="action-text">Curriculum</div>
+                    <div class="action-desc">Manage Grades & Sections</div>
+                </div>
+            </a>
+
+            <a routerLink="/coordinator/accounts" class="action-btn shadow-sm">
+                <i class="bi bi-person-badge action-icon"></i>
+                <div>
+                    <div class="action-text">Faculty Accounts</div>
+                    <div class="action-desc">Manage teacher access</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

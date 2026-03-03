@@ -6,14 +6,16 @@ import { CoordinatorLayoutComponent } from './coordinator-layout.component';
 import { CoordinatorSubNavComponent } from './coordinator-subnav.component';
 import { CoordinatorOverviewComponent } from './coordinator-overview.component';
 
+const accountsModule = () => import('../admin/accounts/accounts.module').then(x => x.AccountsModule);
+
 const routes: Routes = [
     { path: '', component: CoordinatorSubNavComponent, outlet: 'subnav' },
     {
         path: '',
         component: CoordinatorLayoutComponent,
         children: [
-            { path: '', component: CoordinatorOverviewComponent }
-            // Add more child routes here as needed
+            { path: '', component: CoordinatorOverviewComponent },
+            { path: 'accounts', loadChildren: accountsModule }
         ]
     }
 ];

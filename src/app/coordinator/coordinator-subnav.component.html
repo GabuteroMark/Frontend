@@ -1,0 +1,67 @@
+<style>
+    .coordinator-nav {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 0.75rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 12px;
+        padding: 0.6rem 1.25rem;
+        font-weight: 600;
+        color: #475569;
+        transition: 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nav-pills .nav-link:hover {
+        background: #f1f5f9;
+        color: #1e293b;
+    }
+
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .nav-icon {
+        font-size: 1.1rem;
+    }
+</style>
+
+<nav class="coordinator-nav shadow-sm mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="nav nav-pills gap-2">
+            <a routerLink="/coordinator" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                class="nav-link">
+                <i class="bi bi-speedometer2 nav-icon"></i>
+                Dashboard
+            </a>
+            <a routerLink="/ai-upload/approve" routerLinkActive="active" class="nav-link">
+                <i class="bi bi-clipboard-check nav-icon"></i>
+                Approvals
+            </a>
+            <a routerLink="/grade-level" routerLinkActive="active" class="nav-link">
+                <i class="bi bi-journals nav-icon"></i>
+                Curriculum
+            </a>
+            <a routerLink="/coordinator/accounts" routerLinkActive="active" class="nav-link">
+                <i class="bi bi-people nav-icon"></i>
+                Faculty
+            </a>
+        </div>
+
+        <div class="d-none d-md-block">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold">
+                <i class="bi bi-shield-check me-1"></i> Coordinator Access
+            </span>
+        </div>
+    </div>
+</nav>

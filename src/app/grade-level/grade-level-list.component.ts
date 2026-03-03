@@ -46,6 +46,6 @@ export class GradeLevelListComponent implements OnInit {
   }
 
   showSubjects(id: number): void {
-    this.router.navigate(['/subjects', id]);
+    this.router.navigate(['/grade-level', id, 'sections'], { queryParams: { academicLevel: this.academicLevel } });
   }
 }

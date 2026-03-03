@@ -7,6 +7,7 @@ import { Role } from './_models';
 
 const accountModule = () => import('./account/account.module').then(x => x.AccountModule);
 const adminModule = () => import('./admin/admin.module').then(x => x.AdminModule);
+const coordinatorModule = () => import('./coordinator/coordinator.module').then(x => x.CoordinatorModule);
 const profileModule = () => import('./profile/profile.module').then(x => x.ProfileModule);
 const gradeLevelModule = () => import('./grade-level/grade-level.module').then(x => x.GradeLevelModule);
 
@@ -19,13 +20,14 @@ const routes: Routes = [
     { path: 'account', loadChildren: accountModule },
     { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
     { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.Admin] } },
+    { path: 'coordinator', loadChildren: coordinatorModule, canActivate: [AuthGuard], data: { roles: [Role.Coordinator] } },
 
     // Branch / Grade-level lazy-loaded module
     {
         path: 'grade-level',
         loadChildren: gradeLevelModule,
         canActivate: [AuthGuard],
-        data: { roles: [Role.Admin] }
+        data: { roles: [Role.Admin, Role.Coordinator] }
     },
 
     // ✅ AI Upload route

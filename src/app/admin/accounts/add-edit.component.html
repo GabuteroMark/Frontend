@@ -3,264 +3,233 @@
 ================================ -->
 
 <style>
+  /* Page Background */
+  body {
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  }
 
-    /* Page Background */
-    body {
-      background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-    }
-    
-    /* Main Container */
-    .container {
-      max-width: 1100px;
-    }
-    
-    /* Form Card */
-    form {
-      background: rgba(255,255,255,0.95);
-      border-radius: 20px;
-      padding: 40px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.08);
-      transition: 0.3s ease;
-    }
-    
-    form:hover {
-      transform: translateY(-4px);
-    }
-    
-    /* Title */
-    h1 {
-      font-weight: 700;
-      background: linear-gradient(135deg, #2563eb, #10b981);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    /* Labels */
-    .form-label {
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-    
-    /* Inputs */
-    .form-control,
-    .form-select {
-      border-radius: 12px;
-      padding: 12px 14px;
-      border: 1px solid #e2e8f0;
-      transition: 0.3s ease;
-    }
-    
-    .form-control:focus,
-    .form-select:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
-    }
-    
-    /* Password Section Divider */
-    .password-section {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #e2e8f0;
-    }
-    
-    .password-section h3 {
-      font-weight: 600;
-    }
-    
-    /* Save Button */
-    .btn-primary {
-      background: linear-gradient(135deg, #2563eb, #3b82f6);
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-weight: 600;
-      transition: 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 25px rgba(37,99,235,0.4);
-    }
-    
-    /* Cancel Link */
-    .btn-link {
-      text-decoration: none;
-      font-weight: 500;
-    }
-    
-    .btn-link:hover {
-      text-decoration: underline;
-    }
-    
-    /* Invalid Feedback */
-    .invalid-feedback {
-      font-size: 13px;
-    }
-    
-    /* Spinner */
-    .spinner-border-sm {
-      vertical-align: middle;
-    }
-    
-    </style>
-    
-    
-    <div class="container my-5">
-    
-      <h1 class="text-center mb-5">
-        {{ title }}
-      </h1>
-    
-      <form *ngIf="!loading"
-            [formGroup]="form"
-            (ngSubmit)="onSubmit()"
-            class="shadow-lg rounded-3">
-    
-        <!-- Personal Info -->
-        <div class="row">
-    
-          <div class="col-md-3 mb-4">
-            <label class="form-label">Title</label>
-            <select formControlName="title"
-                    class="form-select"
-                    [ngClass]="{ 'is-invalid': submitted && f.title.errors }">
-              <option value=""></option>
-              <option value="Mr">Mr</option>
-              <option value="Mrs">Mrs</option>
-              <option value="Miss">Miss</option>
-              <option value="Ms">Ms</option>
-            </select>
-            <div *ngIf="submitted && f.title.errors"
-                 class="invalid-feedback">
-              Title is required
-            </div>
-          </div>
-    
-          <div class="col-md-4 mb-4">
-            <label class="form-label">First Name</label>
-            <input type="text"
-                   formControlName="firstName"
-                   class="form-control"
-                   [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
-            <div *ngIf="submitted && f.firstName.errors"
-                 class="invalid-feedback">
-              First Name is required
-            </div>
-          </div>
-    
-          <div class="col-md-4 mb-4">
-            <label class="form-label">Last Name</label>
-            <input type="text"
-                   formControlName="lastName"
-                   class="form-control"
-                   [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
-            <div *ngIf="submitted && f.lastName.errors"
-                 class="invalid-feedback">
-              Last Name is required
-            </div>
-          </div>
-    
+  /* Main Container */
+  .container {
+    max-width: 1100px;
+  }
+
+  /* Form Card */
+  form {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 40px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+    transition: 0.3s ease;
+  }
+
+  form:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Title */
+  h1 {
+    font-weight: 700;
+    background: linear-gradient(135deg, #2563eb, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Labels */
+  .form-label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  /* Inputs */
+  .form-control,
+  .form-select {
+    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+    transition: 0.3s ease;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  }
+
+  /* Password Section Divider */
+  .password-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .password-section h3 {
+    font-weight: 600;
+  }
+
+  /* Save Button */
+  .btn-primary {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-weight: 600;
+    transition: 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+  }
+
+  /* Cancel Link */
+  .btn-link {
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .btn-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Invalid Feedback */
+  .invalid-feedback {
+    font-size: 13px;
+  }
+
+  /* Spinner */
+  .spinner-border-sm {
+    vertical-align: middle;
+  }
+</style>
+
+
+<div class="container my-5">
+
+  <h1 class="text-center mb-5">
+    {{ title }}
+  </h1>
+
+  <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()" class="shadow-lg rounded-3">
+
+    <!-- Personal Info -->
+    <div class="row">
+
+      <div class="col-md-3 mb-4">
+        <label class="form-label">Title</label>
+        <select formControlName="title" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.title.errors }">
+          <option value=""></option>
+          <option value="Mr">Mr</option>
+          <option value="Mrs">Mrs</option>
+          <option value="Miss">Miss</option>
+          <option value="Ms">Ms</option>
+        </select>
+        <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+          Title is required
         </div>
-    
-        <!-- Contact Info -->
-        <div class="row">
-    
-          <div class="col-md-6 mb-4">
-            <label class="form-label">Email</label>
-            <input type="text"
-                   formControlName="email"
-                   class="form-control"
-                   [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
-            <div *ngIf="submitted && f.email.errors"
-                 class="invalid-feedback">
-              Valid email is required
-            </div>
-          </div>
-    
-          <div class="col-md-6 mb-4">
-            <label class="form-label">Phone Number</label>
-            <input type="text"
-                   formControlName="phoneNumber"
-                   class="form-control"
-                   [ngClass]="{ 'is-invalid': submitted && f.phoneNumber.errors }" />
-            <div *ngIf="submitted && f.phoneNumber.errors"
-                 class="invalid-feedback">
-              Valid Philippine mobile number required
-            </div>
-          </div>
-    
-        </div>
-    
-        <!-- Role -->
-        <div class="row">
-          <div class="col-md-6 mb-4">
-            <label class="form-label">Role</label>
-            <select formControlName="role"
-                    class="form-select"
-                    [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
-              <option value=""></option>
-              <option value="Admin">Admin</option>
-              <option value="Teacher">Teacher</option>
-              <option value="Coordinator">Coordinator</option>
-            </select>
-            <div *ngIf="submitted && f.role.errors"
-                 class="invalid-feedback">
-              Role is required
-            </div>
-          </div>
-        </div>
-    
-        <!-- Password Section -->
-        <div *ngIf="id" class="password-section">
-          <h3>Change Password</h3>
-          <p class="text-muted">Leave blank to keep current password</p>
-        </div>
-    
-        <div class="row">
-    
-          <div class="col-md-6 mb-4">
-            <label class="form-label">Password</label>
-            <input type="password"
-                   formControlName="password"
-                   class="form-control"
-                   [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-          </div>
-    
-          <div class="col-md-6 mb-4">
-            <label class="form-label">Confirm Password</label>
-            <input type="password"
-                   formControlName="confirmPassword"
-                   class="form-control"
-                   [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-          </div>
-    
-        </div>
-    
-        <!-- Buttons -->
-        <div class="text-center mt-4">
-          <button [disabled]="submitting"
-                  class="btn btn-primary w-100">
-    
-            <span *ngIf="submitting"
-                  class="spinner-border spinner-border-sm me-2">
-            </span>
-    
-            Save Account
-          </button>
-    
-          <a routerLink="/admin/accounts"
-             class="btn btn-link mt-3 d-block">
-            Cancel
-          </a>
-        </div>
-    
-      </form>
-    
-      <div *ngIf="loading"
-           class="text-center my-5">
-        <span class="spinner-border spinner-border-lg"></span>
       </div>
-    
+
+      <div class="col-md-4 mb-4">
+        <label class="form-label">First Name</label>
+        <input type="text" formControlName="firstName" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+        <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+          First Name is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <label class="form-label">Last Name</label>
+        <input type="text" formControlName="lastName" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+          Last Name is required
+        </div>
+      </div>
+
     </div>
+
+    <!-- Contact Info -->
+    <div class="row">
+
+      <div class="col-md-6 mb-4">
+        <label class="form-label">Email</label>
+        <input type="text" formControlName="email" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+          Valid email is required
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label class="form-label">Phone Number</label>
+        <input type="text" formControlName="phoneNumber" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.phoneNumber.errors }" />
+        <div *ngIf="submitted && f.phoneNumber.errors" class="invalid-feedback">
+          Valid Philippine mobile number required
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Role -->
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <label class="form-label">Role</label>
+        <select formControlName="role" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
+          <option value=""></option>
+          <option value="Admin">Admin</option>
+          <option value="Teacher">Teacher</option>
+          <option value="Coordinator">Coordinator</option>
+        </select>
+        <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
+          Role is required
+        </div>
+      </div>
+    </div>
+
+    <!-- Password Section -->
+    <div *ngIf="id" class="password-section">
+      <h3>Change Password</h3>
+      <p class="text-muted">Leave blank to keep current password</p>
+    </div>
+
+    <div class="row">
+
+      <div class="col-md-6 mb-4">
+        <label class="form-label">Password</label>
+        <input type="password" formControlName="password" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" formControlName="confirmPassword" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div class="text-center mt-4">
+      <button [disabled]="submitting" class="btn btn-primary w-100">
+
+        <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2">
+        </span>
+
+        Save Account
+      </button>
+
+      <a [routerLink]="returnUrl" class="btn btn-link mt-3 d-block">
+        Cancel
+      </a>
+    </div>
+
+  </form>
+
+  <div *ngIf="loading" class="text-center my-5">
+    <span class="spinner-border spinner-border-lg"></span>
+  </div>
+
+</div>

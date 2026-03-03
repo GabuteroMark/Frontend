@@ -1,256 +1,354 @@
-<!-- ===============================
-     ELITE AI PDF GENERATOR PAGE
-================================ -->
-
 <style>
-  /* Background */
-  body {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+  /* PREMIUM GLOBAL STYLES */
+  .upload-container {
+    padding: 3rem 1.5rem;
+    min-height: 90vh;
   }
 
-  /* Card */
-  .card {
-    border: none;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
-    transition: 0.3s ease;
+  .premium-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 40px;
+    box-shadow: 0 40px 100px -20px rgba(30, 27, 75, 0.15);
+    overflow: hidden;
   }
 
-  .card:hover {
-    transform: translateY(-5px);
-  }
-
-  /* Title */
-  .card-title {
-    font-size: 2rem;
-    font-weight: 700;
+  .hero-header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 100%);
+    padding: 4rem 3rem;
     text-align: center;
-    margin-bottom: 30px;
-    background: linear-gradient(135deg, #2563eb, #10b981);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  /* Select & Input */
-  .form-select,
-  .form-control {
-    border-radius: 12px;
-    padding: 10px 14px;
-    border: 1px solid #e2e8f0;
-    transition: 0.3s ease;
-  }
-
-  .form-select:focus,
-  .form-control:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-  }
-
-  /* Generate Button */
-  .btn-generate {
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    padding: 12px;
-    transition: 0.3s ease;
     color: white;
+    position: relative;
   }
 
-  .btn-generate:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
-  /* Download Button */
-  .btn-download {
-    background: linear-gradient(135deg, #16a34a, #22c55e);
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    padding: 8px 16px;
-    color: white;
-    transition: 0.3s ease;
+  .hero-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 500;
+    line-height: 1.6;
   }
 
-  .btn-download:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+  /* Selection Workspace */
+  .workspace-body {
+    padding: 3.5rem;
   }
 
-  /* Question Panel */
-  .questions-panel {
-    max-height: 400px;
-    overflow-y: auto;
+  .section-label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #4f46e5;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-label::after {
+    content: "";
+    height: 1px;
+    background: #e2e8f0;
+    flex: 1;
+  }
+
+  /* Input Styling */
+  .label-elite {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .select-elite,
+  .input-elite {
     background: #f8fafc;
-    padding: 20px;
-    border-radius: 15px;
-    margin-top: 20px;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    color: #1e293b;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.25rem center;
+    background-size: 1.25rem;
   }
 
-  /* Question Block */
-  .question-block {
+  .input-elite[type="file"] {
+    background-image: none;
+    padding: 0.75rem;
+    cursor: pointer;
+  }
+
+  .select-elite:focus,
+  .input-elite:focus {
     background: white;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    transition: 0.3s ease;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    outline: none;
   }
 
-  .question-block:hover {
-    background: #eef2ff;
-    transform: translateY(-2px);
+  .select-elite:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  /* List group style */
-  .list-group-item {
+  /* Buttons */
+  .btn-submit-elite {
+    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    color: white;
     border: none;
-    padding: 5px 10px;
-    font-size: 0.95rem;
-    border-radius: 6px;
-    transition: 0.2s ease;
+    border-radius: 18px;
+    padding: 1.15rem;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: 0.3s;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
   }
 
-  .list-group-item:hover {
-    background-color: #e0f2fe;
+  .btn-submit-elite:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(79, 70, 229, 0.3);
   }
 
-  /* Generated PDFs list */
-  .generated-pdfs {
-    margin-top: 30px;
+  /* MEDIA QUERIES FOR RESPONSIVENESS */
+  @media (max-width: 992px) {
+    .hero-title {
+      font-size: 2.25rem;
+    }
+
+    .workspace-body {
+      padding: 2.5rem;
+    }
   }
 
-  .generated-pdfs .list-group-item {
-    border-radius: 10px;
-    margin-bottom: 8px;
+  @media (max-width: 768px) {
+    .upload-container {
+      padding: 1.5rem 1rem;
+    }
+
+    .hero-header {
+      padding: 3rem 1.5rem;
+    }
+
+    .hero-title {
+      font-size: 1.75rem;
+    }
+
+    .workspace-body {
+      padding: 1.5rem;
+    }
+
+    .premium-card {
+      border-radius: 24px;
+    }
   }
 
-  /* Alerts */
-  .alert {
-    border-radius: 10px;
-    font-size: 14px;
+  @media (max-width: 576px) {
+    .modern-table td {
+      padding: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .badge-elite {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.7rem;
+    }
+  }
+
+  /* Status Table */
+  .table-section {
+    margin-top: 5rem;
+  }
+
+  .modern-table {
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    width: 100%;
+  }
+
+  .modern-table thead th {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    padding: 1rem 1.5rem;
+  }
+
+  .modern-table tbody tr {
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    transition: 0.2s;
+  }
+
+  .modern-table tbody tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .modern-table td {
+    padding: 1.5rem;
+    border: none;
+    vertical-align: middle;
+  }
+
+  .modern-table td:first-child {
+    border-radius: 20px 0 0 20px;
+  }
+
+  .modern-table td:last-child {
+    border-radius: 0 20px 20px 0;
+  }
+
+  /* Badges */
+  .badge-elite {
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-pending {
+    background: #fffbeb;
+    color: #b45309;
+  }
+
+  .badge-approved {
+    background: #f0fdf4;
+    color: #15803d;
+  }
+
+  .badge-rejected {
+    background: #fff1f2;
+    color: #e11d48;
+  }
+
+  .badge-ai {
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .badge-ai-active {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .badge-ai-done {
+    background: #f0fdf4;
+    color: #15803d;
+  }
+
+  /* Feedback */
+  .alert-floating {
+    border-radius: 20px;
+    padding: 1.25rem 2rem;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    margin-top: 2rem;
   }
 </style>
 
+<div class="upload-container">
+  <div class="premium-card shadow-2xl">
 
-<div class="container my-5">
-  <div class="card p-4">
-
-    <h3 class="card-title">AI PDF Topic Submission</h3>
-
-    <p class="text-center text-muted mb-4">
-      Upload your topic PDF below. It will be sent to the Admin for review.
-      Once approved, the AI will generate questions and you can download the PDF.
-    </p>
-
-    <!-- Hierarchical Selection -->
-    <div class="row g-3 mb-4">
-      <div class="col-md-4">
-        <label class="form-label">Academic Level</label>
-        <select class="form-select" [(ngModel)]="selectedAcademicLevel" (change)="onAcademicLevelChange()">
-          <option value="">Select Academic Level</option>
-          <option *ngFor="let level of academicLevels" [value]="level">
-            {{ level }}
-          </option>
-        </select>
-      </div>
-
-      <div class="col-md-4">
-        <label class="form-label">Grade Level</label>
-        <select class="form-select" [(ngModel)]="selectedGradeLevelId" (change)="onGradeLevelChange()"
-          [disabled]="!selectedAcademicLevel">
-          <option value="">Select Grade Level</option>
-          <option *ngFor="let g of filteredGradeLevels" [value]="g.id">
-            {{ g.name }}
-          </option>
-        </select>
-      </div>
-
-      <div class="col-md-4">
-        <label class="form-label">Section/Year Level</label>
-        <select class="form-select" [(ngModel)]="selectedSubjectId" (change)="onSubjectChange()"
-          [disabled]="!selectedGradeLevelId">
-          <option value="">Select Section</option>
-          <option *ngFor="let s of subjects" [value]="s.id">
-            {{ s.name }}
-          </option>
-        </select>
-      </div>
+    <!-- Hero Header -->
+    <div class="hero-header">
+      <h1 class="hero-title">Submission of PDFs</h1>
     </div>
 
-    <!-- File Upload -->
-    <div class="row g-3 align-items-end mb-3">
-      <div class="col-md-8">
-        <label class="form-label">Upload PDF</label>
-        <input type="file" class="form-control" (change)="onFileSelected($event)" />
+    <div class="workspace-body">
+
+      <!-- STEP 1: CATEGORIZATION -->
+      <div class="section-label">Educational Context</div>
+      <div class="row g-4 mb-5">
+        <div class="col-lg-3 col-md-6">
+          <label class="label-elite">Department</label>
+          <select class="select-elite" [(ngModel)]="selectedAcademicLevel" (change)="onAcademicLevelChange()">
+            <option value="">Select Level</option>
+            <option *ngFor="let level of academicLevels" [value]="level">{{ level }}</option>
+          </select>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <label class="label-elite">Grade Index</label>
+          <select class="select-elite" [(ngModel)]="selectedGradeLevelId" (change)="onGradeLevelChange()"
+            [disabled]="!selectedAcademicLevel">
+            <option value="">Select Grade</option>
+            <option *ngFor="let g of filteredGradeLevels" [value]="g.id">{{ g.name }}</option>
+          </select>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <label class="label-elite">{{ selectedAcademicLevel === 'Tertiary Education' ? 'Academic Year' : 'Section'
+            }}</label>
+          <select class="select-elite" [(ngModel)]="selectedSectionId" (change)="onSectionChange()"
+            [disabled]="!selectedGradeLevelId">
+            <option value="">Select Assignment</option>
+            <option *ngFor="let s of sections" [value]="s.id">{{ s.name }}</option>
+          </select>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <label class="label-elite">Specialized Subject</label>
+          <select class="select-elite" [(ngModel)]="selectedSubjectId" (change)="onSubjectChange()"
+            [disabled]="!selectedSectionId">
+            <option value="">Select Subject</option>
+            <option *ngFor="let sub of subjects" [value]="sub.id">{{ sub.name }}</option>
+          </select>
+        </div>
       </div>
 
-      <div class="col-md-4 d-grid">
-        <button class="btn btn-generate" (click)="submitTopicRequest()" [disabled]="loading">
-          {{ loading ? 'Submitting...' : 'Submit for Review' }}
-        </button>
+      <!-- STEP 2: SOURCE UPLOAD -->
+      <div class="section-label">Source Document</div>
+      <div class="row g-4 align-items-end">
+        <div class="col-lg-8">
+          <label class="label-elite">Curriculum PDF Source</label>
+          <input type="file" class="input-elite" (change)="onFileSelected($event)" accept=".pdf" />
+        </div>
+
+        <div class="col-lg-4">
+          <button class="btn-submit-elite" (click)="submitTopicRequest()" [disabled]="loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+            <i *ngIf="!loading" class="bi bi-cloud-arrow-up-fill fs-5"></i>
+            {{ loading ? 'Uploading...' : 'Upload' }}
+          </button>
+        </div>
       </div>
-    </div>
 
-    <!-- Alerts -->
-    <div *ngIf="errorMsg" class="alert alert-danger">
-      {{ errorMsg }}
-    </div>
-
-    <div *ngIf="successMsg" class="alert alert-success">
-      {{ successMsg }}
-    </div>
-
-    <!-- My Submissions Table -->
-    <div class="mt-5">
-      <h4 class="mb-3">My Topic Submissions</h4>
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>Date</th>
-              <th>File</th>
-              <th>Section</th>
-              <th>Approval Status</th>
-              <th>AI Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let req of myRequests">
-              <td>{{ req.createdAt | date:'short' }}</td>
-              <td>{{ req.fileName }}</td>
-              <td>{{ req.subjectName }}</td>
-              <td>
-                <span class="badge"
-                  [ngClass]="{'bg-warning': req.status === 'Pending', 'bg-success': req.status === 'Approved', 'bg-danger': req.status === 'Rejected'}">
-                  {{ req.status }}
-                </span>
-              </td>
-              <td>
-                <span class="badge"
-                  [ngClass]="{'bg-secondary': req.aiStatus === 'Idle', 'bg-info': req.aiStatus === 'Processing', 'bg-success': req.aiStatus === 'Completed', 'bg-danger': req.aiStatus === 'Failed'}">
-                  {{ req.aiStatus }}
-                </span>
-                <div *ngIf="req.remarks" class="small text-danger mt-1">{{ req.remarks }}</div>
-              </td>
-              <td>
-                <button *ngIf="req.aiStatus === 'Completed'" class="btn btn-sm btn-outline-primary"
-                  (click)="successMsg = 'Fetching PDF...'; loadMySubmissions()">
-                  Check Result
-                </button>
-                <span *ngIf="req.aiStatus !== 'Completed'" class="text-muted small">-</span>
-              </td>
-            </tr>
-            <tr *ngIf="myRequests.length === 0">
-              <td colspan="6" class="text-center text-muted py-4">No submissions found.</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Feedback Alerts -->
+      <div *ngIf="errorMsg" class="alert alert-danger alert-floating mt-4">
+        <i class="bi bi-shield-exclamation me-2"></i> {{ errorMsg }}
       </div>
+      <div *ngIf="successMsg" class="alert alert-success alert-floating mt-4">
+        <i class="bi bi-shield-check me-2"></i> {{ successMsg }}
+      </div>
+
     </div>
 
   </div>

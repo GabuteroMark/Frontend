@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AIQuestionService, GradeLevel, Subject, Question, TopicRequest } from './ai-question.service';
 import { AccountService } from '@app/_services';
 
@@ -13,23 +14,22 @@ export class AIUploadComponent implements OnInit {
   gradeLevels: GradeLevel[] = [];
   filteredGradeLevels: GradeLevel[] = [];
   selectedGradeLevelId: number | null = null;
+  sections: any[] = [];
+  selectedSectionId: number | null = null;
   subjects: Subject[] = [];
   selectedSubjectId: number | null = null;
   loading = false;
   errorMsg = '';
   successMsg = '';
 
-  // For submissions list
-  myRequests: TopicRequest[] = [];
-
   constructor(
     private aiService: AIQuestionService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.loadGradeLevels();
-    this.loadMySubmissions();
   }
 
   loadGradeLevels() {
@@ -52,20 +52,11 @@ export class AIUploadComponent implements OnInit {
     }
   }
 
-  loadMySubmissions() {
-    const account = this.accountService.accountValue;
-    if (!account) return;
-
-    this.aiService.getTopicRequests({ accountId: Number(account.id), role: account.role })
-      .subscribe({
-        next: requests => this.myRequests = requests,
-        error: err => console.error(err)
-      });
-  }
-
   onAcademicLevelChange() {
     this.selectedGradeLevelId = null;
+    this.selectedSectionId = null;
     this.selectedSubjectId = null;
+    this.sections = [];
     this.subjects = [];
     this.filteredGradeLevels = [];
     this.successMsg = '';
@@ -74,13 +65,28 @@ export class AIUploadComponent implements OnInit {
   }
 
   onGradeLevelChange() {
+    this.selectedSectionId = null;
     this.selectedSubjectId = null;
+    this.sections = [];
     this.subjects = [];
     this.successMsg = '';
     this.errorMsg = '';
     if (!this.selectedGradeLevelId) return;
 
-    this.aiService.getSubjects(this.selectedGradeLevelId).subscribe({
+    this.aiService.getSections(this.selectedGradeLevelId).subscribe({
+      next: secs => this.sections = secs,
+      error: err => console.error(err)
+    });
+  }
+
+  onSectionChange() {
+    this.selectedSubjectId = null;
+    this.subjects = [];
+    this.successMsg = '';
+    this.errorMsg = '';
+    if (!this.selectedSectionId) return;
+
+    this.aiService.getSubjects(this.selectedSectionId).subscribe({
       next: subs => this.subjects = subs,
       error: err => console.error(err)
     });
@@ -97,8 +103,8 @@ export class AIUploadComponent implements OnInit {
 
   submitTopicRequest() {
     const account = this.accountService.accountValue;
-    if (!this.selectedFile || !this.selectedGradeLevelId || !this.selectedSubjectId || !account) {
-      this.errorMsg = 'Please select file, grade level, and subject';
+    if (!this.selectedFile || !this.selectedGradeLevelId || !this.selectedSectionId || !this.selectedSubjectId || !account) {
+      this.errorMsg = 'Please select file, grade level, section, and subject';
       return;
     }
 
@@ -106,13 +112,12 @@ export class AIUploadComponent implements OnInit {
     this.errorMsg = '';
     this.successMsg = '';
 
-    this.aiService.submitTopicRequest(this.selectedFile, Number(account.id), this.selectedGradeLevelId, this.selectedSubjectId)
+    this.aiService.submitTopicRequest(this.selectedFile, Number(account.id), this.selectedGradeLevelId, this.selectedSectionId, this.selectedSubjectId)
       .subscribe({
         next: res => {
           this.loading = false;
           this.successMsg = '✅ Topic submitted for Admin approval successfully!';
           this.selectedFile = null;
-          this.loadMySubmissions();
         },
         error: err => {
           this.errorMsg = 'Server error submitting topic';

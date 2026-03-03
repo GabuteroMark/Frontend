@@ -1,262 +1,102 @@
-﻿<!-- ===============================
-     PREMIUM ADMIN SIDEBAR DESIGN
-================================ -->
+﻿<div class="app-container" [ngClass]="{ 'bg-light': !account }">
 
-<style>
-  /* App container */
-  .app-container {
-    display: flex;
-  }
-
-  /* ===============================
-     SIDEBAR BASE
-  ================================ */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100vh;
-    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-    backdrop-filter: blur(10px);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.4);
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    z-index: 2000;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* ===============================
-     RESPONSIVE SIDEBAR
-  ================================ */
-  @media (max-width: 991px) {
-    .sidebar {
-      transform: translateX(-100%);
-    }
-
-    .sidebar.mobile-show {
-      transform: translateX(0);
-    }
-
-    .main-content {
-      margin-left: 0 !important;
-      padding-top: 60px !important;
-    }
-  }
-
-  /* Hamburger Toggle */
-  .sidebar-toggle {
-    display: none;
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 2500;
-    background: #0f172a;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    width: 40px;
-    height: 40px;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-  }
-
-  @media (max-width: 991px) {
-    .sidebar-toggle {
-      display: flex;
-    }
-  }
-
-  /* Sidebar Backdrop (Mobile Only) */
-  .sidebar-backdrop {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
-    z-index: 1500;
-  }
-
-  @media (max-width: 991px) {
-    .sidebar-backdrop.mobile-show {
-      display: block;
-    }
-  }
-
-  /* ===============================
-     TITLE
-  ================================ */
-  .sidebar-title {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-align: center;
-    color: #ffffff;
-    margin-bottom: 45px;
-  }
-
-  /* ===============================
-     NAV LINKS
-  ================================ */
-  .sidebar .nav-link {
-    position: relative;
-    color: #cbd5e1 !important;
-    font-weight: 500;
-    padding: 14px 18px;
-    margin-bottom: 12px;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    font-size: 14px;
-    text-decoration: none;
-  }
-
-  /* Hover */
-  .sidebar .nav-link:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #38bdf8 !important;
-    transform: translateX(6px);
-  }
-
-  /* Glowing side bar */
-  .sidebar .nav-link::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 4px;
-    height: 100%;
-    background: #38bdf8;
-    border-radius: 6px;
-    transform: scaleY(0);
-    transition: transform 0.3s ease;
-  }
-
-  .sidebar .nav-link:hover::before {
-    transform: scaleY(1);
-  }
-
-  /* ===============================
-     ACTIVE LINK
-  ================================ */
-  .active-link {
-    background: rgba(56, 189, 248, 0.15);
-    color: #38bdf8 !important;
-    font-weight: 600;
-  }
-
-  .active-link::before {
-    transform: scaleY(1);
-  }
-
-  /* ===============================
-     LOGOUT BUTTON
-  ================================ */
-  .logout-btn {
-    margin-top: auto;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    font-weight: 600;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    transition: all 0.3s ease;
-  }
-
-  .logout-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
-  }
-
-  /* Main Content shift */
-  .main-content {
-    flex-grow: 1;
-    margin-left: 250px;
-    padding: 0 20px 20px 20px;
-  }
-
-  /* Dissolve Effect Styles */
-  .sidebar-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-</style>
-
-
-<div class="app-container" [ngClass]="{ 'bg-light': account }">
-
-  <!-- Mobile Sidebar Toggle (Hamburger) -->
-  <button *ngIf="account" class="sidebar-toggle" (click)="showMobileSidebar = !showMobileSidebar">
-    ☰
+  <!-- Mobile Toggle -->
+  <button *ngIf="account" class="sidebar-toggle-mobile" (click)="showMobileSidebar = !showMobileSidebar">
+    <i class="bi bi-list"></i>
   </button>
 
-  <!-- SIDEBAR BACKDROP (Mobile Only) -->
-  <div *ngIf="account" class="sidebar-backdrop" [class.mobile-show]="showMobileSidebar"
-    (click)="showMobileSidebar = false"></div>
+  <!-- Backdrop -->
+  <div *ngIf="account" class="backdrop" [class.show]="showMobileSidebar" (click)="showMobileSidebar = false"></div>
 
-  <!-- SIDEBAR (Shown for all logged-in users) -->
+  <!-- SIDEBAR -->
   <nav *ngIf="account" class="sidebar" [class.mobile-show]="showMobileSidebar">
 
-    <!-- SIDEBAR CONTENT WRAPPER -->
-    <div class="sidebar-content">
-
-      <div class="sidebar-title">
-        {{ account.role === Role.Admin ? 'ADMIN PANEL' : 'DASHBOARD' }}
-      </div>
-
-      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
-        Home
-      </a>
-
-      <!-- Academic Level Trigger -->
-      <a *ngIf="account.role === Role.Admin" routerLink="/grade-level" routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{ exact: true }" class="nav-link d-flex justify-content-between align-items-center">
-        Academic Level
-      </a>
-
-      <a *ngIf="account.role === Role.Admin" routerLink="/admin/accounts" routerLinkActive="active-link"
-        class="nav-link">
-        Manage Accounts
-      </a>
-
-      <a *ngIf="account.role === Role.Admin" routerLink="/ai-upload/topic-approval" routerLinkActive="active-link"
-        class="nav-link">
-        Topic Approvals
-      </a>
-
-      <a *ngIf="account.role === Role.Admin" routerLink="/profile" routerLinkActive="active-link" class="nav-link">
-        Profile
-      </a>
-
-
-      <a *ngIf="account.role === Role.Admin || account.role === Role.Teacher || account.role === Role.Coordinator"
-        routerLink="/ai-upload" routerLinkActive="active-link" class="nav-link">
-        Upload Topics
-      </a>
-
-      <button (click)="logout()" class="logout-btn">
-        Logout
+    <!-- Header -->
+    <div class="sidebar-header">
+      <h1 class="title">Teacher Evaluation System</h1>
+      <button class="toggle-btn d-none d-lg-block">
+        <i class="bi bi-list-nested"></i>
       </button>
     </div>
+
+    <!-- Navigation -->
+    <div class="sidebar-nav">
+
+      <!-- Home / Dashboard -->
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item-link">
+        <i class="bi bi-grid-fill"></i>
+        <span>Dashboard</span>
+      </a>
+
+
+      <!-- Academic Level -->
+      <a *ngIf="account && (account.role === Role.Admin || account.role === Role.Coordinator)" routerLink="/grade-level"
+        routerLinkActive="active-link" class="nav-item-link">
+        <i class="bi bi-diagram-3"></i>
+        <span>Academic Level</span>
+      </a>
+
+      <!-- Student Registration -->
+      <a *ngIf="account && account.role === Role.Admin" routerLink="/student-registration"
+        routerLinkActive="active-link" class="nav-item-link">
+        <i class="bi bi-person-plus"></i>
+        <span>Student Registration</span>
+      </a>
+
+      <!-- Submission of PDFs -->
+      <a *ngIf="account && (account.role === Role.Admin || account.role === Role.Teacher || account.role === Role.Coordinator)"
+        routerLink="/ai-upload" routerLinkActive="active-link" class="nav-item-link">
+        <i class="bi bi-filetype-pdf"></i>
+        <span>Submission of PDFs</span>
+      </a>
+
+      <!-- Submission History -->
+      <a *ngIf="account && (account.role === Role.Admin || account.role === Role.Teacher || account.role === Role.Coordinator)"
+        routerLink="/ai-upload/history" routerLinkActive="active-link" class="nav-item-link">
+        <i class="bi bi-clock-history"></i>
+        <span>Submission History</span>
+      </a>
+
+      <!-- Activity Logs -->
+      <a *ngIf="account && account.role === Role.Admin" routerLink="/activity-logs" routerLinkActive="active-link"
+        class="nav-item-link">
+        <i class="bi bi-clock-history"></i>
+        <span>Activity Logs</span>
+      </a>
+
+      <!-- Topic Approvals -->
+      <a *ngIf="account && (account.role === Role.Admin || account.role === Role.Coordinator)"
+        routerLink="/ai-upload/topic-approval" routerLinkActive="active-link" class="nav-item-link">
+        <i class="bi bi-check2-circle"></i>
+        <span>Topic Approvals</span>
+      </a>
+
+    </div>
+
+    <!-- Footer / User Profile -->
+    <div *ngIf="account" class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="user-details">
+          <span class="user-name">{{ account.firstName }} {{ account.lastName }}</span>
+          <span class="user-role">{{ account.role }}</span>
+        </div>
+      </div>
+      <button (click)="logout()" class="logout-icon-btn" title="Logout">
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </div>
+
   </nav>
 
   <!-- MAIN CONTENT -->
-  <div class="main-content" [ngStyle]="{ 'margin-left': account ? '250px' : '0' }">
-
+  <div class="main-content" [class.no-sidebar]="!account">
     <router-outlet name="subnav"></router-outlet>
-
     <alert></alert>
-
     <router-outlet></router-outlet>
-
   </div>
 
 </div>

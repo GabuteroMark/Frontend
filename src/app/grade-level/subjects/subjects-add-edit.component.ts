@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SubjectsService, Subject } from '@app/_services/subjects.service';
+import { SectionService, Section } from '@app/_services/section.service';
 import { GradeLevelService } from '@app/_services/grade-level.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { GradeLevelService } from '@app/_services/grade-level.service';
 export class SubjectsAddEditComponent implements OnInit {
 
   form!: FormGroup;
-  subjectId?: number;
+  sectionId?: number;
   gradeLevelId!: number;
   gradeLevelName = '';
   academicLevel = '';
@@ -21,7 +21,7 @@ export class SubjectsAddEditComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private subjectsService: SubjectsService,
+    private sectionService: SectionService,
     private gradeLevelService: GradeLevelService,
     private route: ActivatedRoute,
     private router: Router
@@ -43,15 +43,15 @@ export class SubjectsAddEditComponent implements OnInit {
       this.gradeLevelName = res.name;
     });
 
-    const subjectParam = this.route.snapshot.paramMap.get('subjectId');
-    if (subjectParam) {
-      this.subjectId = Number(subjectParam);
+    const secParam = this.route.snapshot.paramMap.get('sectionId');
+    if (secParam) {
+      this.sectionId = Number(secParam);
     }
 
     // Read query params for context
     this.route.queryParams.subscribe(params => {
       this.academicLevel = params.academicLevel || '';
-      this.title = this.subjectId
+      this.title = this.sectionId
         ? (this.academicLevel === 'Tertiary Education' ? 'Edit Year Level' : 'Edit Section')
         : (this.academicLevel === 'Tertiary Education' ? 'Add Year Level' : 'Add Section');
     });
@@ -60,8 +60,8 @@ export class SubjectsAddEditComponent implements OnInit {
       name: ['', Validators.required]
     });
 
-    if (this.subjectId) {
-      this.subjectsService.getById(this.subjectId).subscribe(res => {
+    if (this.sectionId) {
+      this.sectionService.getById(this.sectionId).subscribe(res => {
         this.form.patchValue(res);
       });
     }
@@ -76,23 +76,18 @@ export class SubjectsAddEditComponent implements OnInit {
     const rawName = this.form.value.name || '';
     const capitalizedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
 
-    const subject: Subject = {
-      name: capitalizedName,
-      gradeLevelId: this.gradeLevelId
-    };
-
-    if (this.subjectId) {
-      this.subjectsService.update(this.subjectId, subject).subscribe(() => {
-        this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects`]);
+    if (this.sectionId) {
+      this.sectionService.update(this.gradeLevelId, this.sectionId, capitalizedName).subscribe(() => {
+        this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`]);
       });
     } else {
-      this.subjectsService.create(subject).subscribe(() => {
-        this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects`]);
+      this.sectionService.create(this.gradeLevelId, capitalizedName).subscribe(() => {
+        this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`]);
       });
     }
   }
 
   cancel(): void {
-    this.router.navigate([`/grade-level/${this.gradeLevelId}/subjects`]);
+    this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`]);
   }
 }
