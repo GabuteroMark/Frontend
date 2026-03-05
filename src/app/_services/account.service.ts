@@ -110,6 +110,12 @@ export class AccountService {
         );
     }
 
+    getLatestUserActivities(): Observable<any[]> {
+        return this.http.get<any>(`${baseUrl}/latest-activities`).pipe(
+            map(response => response.data || [])
+        );
+    }
+
     getActivityLogs(AccountId: string, filters: any = {}): Observable<any[]> {
         return this.http.post<any[]>(`${baseUrl}/${AccountId}/activity`, filters);
     }

@@ -38,10 +38,15 @@ export class SubjectsListComponent implements OnInit {
     // Fetch parent grade level details
     this.gradeLevelService.getById(this.gradeLevelId).subscribe(res => {
       this.gradeLevelName = res.name;
+      // Robustly identify academicLevel if missing from URL
+      if (!this.academicLevel && res.academicLevel) {
+        this.academicLevel = res.academicLevel;
+        this.loadSections(); // Reload now that we know the level
+      }
     });
 
     this.route.queryParams.subscribe(params => {
-      this.academicLevel = params.academicLevel || '';
+      this.academicLevel = params.academicLevel || this.academicLevel || '';
       this.selectedStrand = params.strand || '';
       this.selectedSemester = params.semester || '';
       this.loadSections();
@@ -49,46 +54,37 @@ export class SubjectsListComponent implements OnInit {
   }
 
   loadSections(): void {
-    // Tertiary Flow: 
-    if (this.academicLevel === 'Tertiary Education') {
-      if (!this.selectedStrand) {
-        this.sections = [];
-        return;
-      }
-      if (!this.selectedSemester) {
-        this.sections = [];
-        return;
-      }
-
-      // Both Year Level (strand) and Semester are selected
-      this.loading = true;
-      this.sectionService.getAll(this.gradeLevelId, this.selectedStrand).subscribe(res => {
-        const semesterSection = res.find(s => s.name === this.selectedSemester);
-        if (semesterSection) {
-          this.viewSubjects(semesterSection);
-        } else {
-          // Create the semester section if it doesn't exist
-          this.sectionService.create(this.gradeLevelId, this.selectedSemester, this.selectedStrand).subscribe(newSec => {
-            this.viewSubjects(newSec);
-          });
-        }
-      });
-      return;
-    }
-
     const isSpecialized = this.gradeLevelName === 'Grade 11' ||
-      this.gradeLevelName === 'Grade 12';
+      this.gradeLevelName === 'Grade 12' ||
+      this.academicLevel === 'Tertiary Education';
 
     if (isSpecialized && !this.selectedStrand) {
       this.sections = [];
       return;
     }
 
+    // For Tertiary, if a semester is selected, we filter for that specific section
+    // but we let the user click "Subjects" themselves to view it.
     this.loading = true;
     this.sectionService.getAll(this.gradeLevelId, this.selectedStrand)
       .subscribe({
         next: (res) => {
           this.sections = res || [];
+
+          // Optional: If tertiary and semester selected, ensure it exists
+          if (this.academicLevel === 'Tertiary Education' && this.selectedSemester) {
+            const existing = this.sections.find(s => s.name === this.selectedSemester);
+            if (!existing) {
+              // Create it if it doesn't exist yet
+              this.sectionService.create(this.gradeLevelId, this.selectedSemester, this.selectedStrand).subscribe(() => {
+                this.loadSections(); // Reload to get the new list
+              });
+            } else {
+              // Filter to just show the selected semester section
+              this.sections = [existing];
+            }
+          }
+
           this.loading = false;
         },
         error: (err) => {

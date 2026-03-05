@@ -33,6 +33,7 @@ export class AddEditComponent implements OnInit {
             email: ['', [Validators.required, Validators.email]],
             phoneNumber: ['', [Validators.required, Validators.pattern(/^(09|\+639)\d{9}$/)]],
             role: ['', Validators.required],
+            assignedLevel: [''],
             // password only required in add mode
             password: ['', [Validators.minLength(6), ...(!this.id ? [Validators.required] : [])]],
             confirmPassword: ['']

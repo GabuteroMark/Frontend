@@ -199,6 +199,21 @@ export class SubjectManagementComponent implements OnInit {
         link.click();
     }
 
+    deleteSubject(subjectId: number) {
+        if (!confirm('Are you sure you want to delete this subject? All associated data will be removed.')) return;
+
+        this.http.delete(`${environment.apiUrl}/api/sections/${this.sectionId}/subjects/${subjectId}`)
+            .subscribe({
+                next: () => {
+                    this.loadSubjects(); // Refresh data
+                },
+                error: (err) => {
+                    console.error('Error deleting subject:', err);
+                    alert('Failed to delete subject. Please try again.');
+                }
+            });
+    }
+
     goBack(): void {
         const isTertiary = this.academicLevel === 'Tertiary Education';
         this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`], {

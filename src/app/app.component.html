@@ -19,8 +19,8 @@
       <ng-container *ngIf="account && account.role === Role.Teacher">
         <h1 class="title">Teacher Dashboard</h1>
       </ng-container>
-      <ng-container *ngIf="account && account.role !== Role.Coordinator && account.role !== Role.Teacher">
-        <h1 class="title">Teacher Evaluation System</h1>
+      <ng-container *ngIf="account && account.role === Role.Admin">
+        <h1 class="title">Admin Dashboard</h1>
         <button class="toggle-btn d-none d-lg-block">
           <i class="bi bi-list-nested"></i>
         </button>
@@ -39,7 +39,9 @@
 
 
       <!-- Academic Level -->
-      <a *ngIf="account && (account.role === Role.Admin || account.role === Role.Coordinator)" routerLink="/grade-level"
+      <a *ngIf="account && (account.role === Role.Admin || account.role === Role.Coordinator)"
+        [routerLink]="['/grade-level']"
+        [queryParams]="account.role === Role.Coordinator && account.assignedLevel ? { academicLevel: account.assignedLevel } : null"
         routerLinkActive="active-link" class="nav-item-link">
         <i class="bi bi-diagram-3"></i>
         <span>Academic Level</span>
@@ -52,7 +54,12 @@
         <span>Manage Accounts</span>
       </a>
 
-
+      <!-- Activity Logs -->
+      <a *ngIf="account && account.role === Role.Admin" routerLink="/admin/activity-log" routerLinkActive="active-link"
+        class="nav-item-link">
+        <i class="bi bi-journal-text"></i>
+        <span>Activity Log</span>
+      </a>
 
       <!-- Submission of PDFs -->
       <a *ngIf="account && (account.role === Role.Admin || account.role === Role.Teacher || account.role === Role.Coordinator)"
@@ -67,13 +74,6 @@
         routerLink="/ai-upload/history" routerLinkActive="active-link" class="nav-item-link">
         <i class="bi bi-clock-history"></i>
         <span>Submission History</span>
-      </a>
-
-      <!-- Activity Logs -->
-      <a *ngIf="account && account.role === Role.Admin" routerLink="/activity-logs" routerLinkActive="active-link"
-        class="nav-item-link">
-        <i class="bi bi-clock-history"></i>
-        <span>Activity Logs</span>
       </a>
 
       <!-- Topic Approvals -->
@@ -105,7 +105,6 @@
 
   <!-- MAIN CONTENT -->
   <div class="main-content" [class.no-sidebar]="!account">
-    <router-outlet name="subnav"></router-outlet>
     <alert></alert>
     <router-outlet></router-outlet>
   </div>

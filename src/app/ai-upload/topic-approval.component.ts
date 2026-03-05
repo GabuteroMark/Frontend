@@ -34,6 +34,8 @@ export class TopicApprovalComponent implements OnInit {
         });
     }
 
+    selectedRequestFiles: { name: string, url: string }[] = [];
+
     constructor(
         private aiService: AIQuestionService,
         private accountService: AccountService,
@@ -48,7 +50,11 @@ export class TopicApprovalComponent implements OnInit {
         const account = this.accountService.accountValue;
         if (!account) return;
 
-        this.aiService.getTopicRequests({ role: account.role, accountId: Number(account.id) })
+        this.aiService.getTopicRequests({
+            role: account.role,
+            accountId: Number(account.id),
+            academicLevel: account.role === Role.Coordinator ? account.assignedLevel : undefined
+        })
             .subscribe({
                 next: res => this.requests = res,
                 error: err => console.error(err)
@@ -91,7 +97,21 @@ export class TopicApprovalComponent implements OnInit {
         if (req.requestFileUrl) {
             window.open(`http://localhost:5000${req.requestFileUrl}`, '_blank');
         } else if (req.fileName.startsWith("Multiple Files")) {
-            alert("This request contains multiple files. Please check the 'uploads' folder on the server.");
+            this.aiService.getRequestFiles(req.id).subscribe({
+                next: files => {
+                    this.selectedRequestFiles = files;
+                    // Trigger bootstrap modal manually or via template binding
+                    const modalElement = document.getElementById('filesModal');
+                    if (modalElement) {
+                        const modal = new (window as any).bootstrap.Modal(modalElement);
+                        modal.show();
+                    }
+                },
+                error: err => {
+                    console.error('Error fetching request files:', err);
+                    alert("Failed to load files list. Check console for details.");
+                }
+            });
         } else {
             // Fallback for older records if any
             window.open(`http://localhost:5000/download/requests/${req.fileName.split('/').pop()}`, '_blank');

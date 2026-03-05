@@ -3,3 +3,4 @@ export * from './alert.service';
 export * from './grade-level.service';
 export * from './question-bank.service';
 export * from './subjects.service';
+export * from './section.service';

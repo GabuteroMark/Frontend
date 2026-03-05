@@ -9,6 +9,7 @@ export class Account {
     email?: string;
     phoneNumber?: string;
     role?: Role;
+    assignedLevel?: string;
     jwtToken?: string;
     manager?: Account; // Optional, if the user has a manager
     BranchId?: string;  // Ensure this is set correctly when the account is fetched

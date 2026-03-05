@@ -225,7 +225,7 @@
                     'Sub-Sections' }}
                 </button>
                 <button class="btn btn-modern btn-primary-gradient shadow-sm" (click)="addSubject()">
-                    <i class="bi bi-plus-lg"></i> Add Identifier
+                    <i class="bi bi-plus-lg"></i> Add Subject
                 </button>
             </div>
         </div>
@@ -256,10 +256,17 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-modern btn-pdf"
-                                        (click)="viewSubjectPDFs(subject.id, subject.name)">
-                                        <i class="bi bi-file-earmark-pdf-fill"></i> Access PDFs
-                                    </button>
+                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                        <button class="btn btn-modern btn-pdf"
+                                            (click)="viewSubjectPDFs(subject.id, subject.name)">
+                                            <i class="bi bi-file-earmark-pdf-fill"></i> Access PDFs
+                                        </button>
+                                        <button class="btn btn-modern btn-outline-danger border-0 p-2"
+                                            style="border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
+                                            (click)="deleteSubject(subject.id)" title="Delete Subject">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -307,7 +314,7 @@
 
                 <div *ngIf="!loadingPDFs && pdfsForSubject.length === 0" class="text-center py-5">
                     <i class="bi bi-cloud-slash fs-1 text-muted opacity-25 d-block mb-3"></i>
-                    <p class="text-muted">No generated documents identified for this identifier.</p>
+                    <p class="text-muted">No generated documents identified for this subject.</p>
                 </div>
 
                 <div class="list-group list-group-flush gap-3" *ngIf="!loadingPDFs && pdfsForSubject.length > 0">
@@ -343,14 +350,14 @@
             <div class="modal-header border-0 bg-dark text-white p-4">
                 <h5 class="modal-title fw-800 fs-4">
                     <i class="bi bi-plus-circle-fill me-2 text-primary"></i>
-                    Add New Identifier
+                    Add New Subject
                 </h5>
                 <button type="button" class="btn-close btn-close-white" (click)="closeAddSubjectModal()"
                     [disabled]="isAddingSubject"></button>
             </div>
             <div class="modal-body p-4 bg-white">
                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-dark">Identifier / Subject Curriculum</label>
+                    <label class="form-label fw-bold text-dark">Subject Name / Curriculum</label>
                     <input type="text"
                         class="form-control form-control-lg bg-light border-0 py-3 px-4 shadow-sm text-dark mt-2"
                         style="text-transform: uppercase;" placeholder="e.g. Fundamental Mathematics"

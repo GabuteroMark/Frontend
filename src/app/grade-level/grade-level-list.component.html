@@ -22,7 +22,7 @@
     margin-bottom: 0.5rem;
   }
 
-  /* Academic Level Grid */
+  /* Academic Hierarchy Grid */
   .level-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -148,36 +148,49 @@
   /* MEDIA QUERIES */
   @media (max-width: 992px) {
     .premium-title {
-      font-size: 2.25rem;
-    }
-
-    .list-title {
       font-size: 2rem;
     }
 
+    .list-title {
+      font-size: 1.75rem;
+    }
+
     .selection-view {
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
     }
   }
 
   @media (max-width: 768px) {
     .premium-title {
-      font-size: 1.75rem;
-    }
-
-    .list-header {
-      padding: 2rem;
-      flex-direction: column;
-      text-align: center;
-      gap: 1.5rem;
-    }
-
-    .list-title {
       font-size: 1.5rem;
     }
 
+    .list-header {
+      padding: 1.5rem;
+      flex-direction: column;
+      text-align: center;
+      gap: 1.25rem;
+    }
+
+    .list-title {
+      font-size: 1.25rem;
+    }
+
     .glass-card {
-      padding: 2rem 1.5rem;
+      padding: 1.5rem 1rem;
+    }
+
+    .card-icon {
+      font-size: 3rem;
+    }
+
+    .card-label {
+      font-size: 1.25rem;
+    }
+
+    .level-grid {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
     }
 
     .grade-grid {
@@ -241,30 +254,34 @@
 <!-- CASE 1: ACADEMIC LEVEL SELECTION GRID -->
 <div *ngIf="!academicLevel" class="selection-view">
   <div class="header-content">
-    <h1 class="premium-title">Academic Hierarchy</h1>
+    <h1 class="premium-title">Academic Level</h1>
     <p class="text-muted fs-5 fw-medium">Select a department to manage the curriculum structure.</p>
   </div>
 
   <div class="level-grid">
-    <a [routerLink]="['.']" [queryParams]="{ academicLevel: 'Primary Education' }" class="glass-card">
+    <a *ngIf="!account || account.role === Role.Admin || account.assignedLevel === 'Primary Education'"
+      [routerLink]="['.']" [queryParams]="{ academicLevel: 'Primary Education' }" class="glass-card">
       <div class="card-icon">🏫</div>
       <div class="card-label">Primary</div>
       <div class="card-sub">Grades 1 through 6</div>
     </a>
 
-    <a [routerLink]="['.']" [queryParams]="{ academicLevel: 'Secondary Education' }" class="glass-card">
+    <a *ngIf="!account || account.role === Role.Admin || account.assignedLevel === 'Secondary Education'"
+      [routerLink]="['.']" [queryParams]="{ academicLevel: 'Secondary Education' }" class="glass-card">
       <div class="card-icon">📗</div>
       <div class="card-label">Secondary</div>
       <div class="card-sub">Grades 7 through 10</div>
     </a>
 
-    <a [routerLink]="['.']" [queryParams]="{ academicLevel: 'Senior High School' }" class="glass-card">
+    <a *ngIf="!account || account.role === Role.Admin || account.assignedLevel === 'Senior High School'"
+      [routerLink]="['.']" [queryParams]="{ academicLevel: 'Senior High School' }" class="glass-card">
       <div class="card-icon">🎓</div>
       <div class="card-label">Senior High</div>
       <div class="card-sub">Grades 11 & 12</div>
     </a>
 
-    <a [routerLink]="['.']" [queryParams]="{ academicLevel: 'Tertiary Education' }" class="glass-card">
+    <a *ngIf="!account || account.role === Role.Admin || account.assignedLevel === 'Tertiary Education'"
+      [routerLink]="['.']" [queryParams]="{ academicLevel: 'Tertiary Education' }" class="glass-card">
       <div class="card-icon">🏛️</div>
       <div class="card-label">Tertiary</div>
       <div class="card-sub">University Programs</div>
@@ -282,7 +299,7 @@
       </p>
     </div>
     <div class="d-flex align-items-center gap-3">
-      <a routerLink="/grade-level" class="btn-nav-back">
+      <a *ngIf="account?.role !== Role.Coordinator" routerLink="/grade-level" class="btn-nav-back">
         <i class="bi bi-chevron-left me-1"></i> Selection
       </a>
       <a *ngIf="academicLevel !== 'Primary Education' && academicLevel !== 'Secondary Education' && academicLevel !== 'Senior High School' && academicLevel !== 'Tertiary Education'"

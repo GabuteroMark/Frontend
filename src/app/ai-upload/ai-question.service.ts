@@ -70,9 +70,11 @@ export class AIQuestionService {
   }
 
   // Teacher submits for approval
-  submitTopicRequest(file: File, accountId: number, gradeLevelId: number, sectionId: number, subjectId: number): Observable<any> {
+  submitTopicRequest(files: File[], accountId: number, gradeLevelId: number, sectionId: number, subjectId: number): Observable<any> {
     const formData = new FormData();
-    formData.append('file', file);
+    files.forEach(file => {
+      formData.append('file', file);
+    });
     formData.append('accountId', accountId.toString());
     formData.append('gradeLevelId', gradeLevelId.toString());
     formData.append('sectionId', sectionId.toString());
@@ -81,10 +83,11 @@ export class AIQuestionService {
   }
 
   // Admin/Teacher gets requests
-  getTopicRequests(params: { accountId?: number; role?: string }): Observable<TopicRequest[]> {
+  getTopicRequests(params: { accountId?: number; role?: string; academicLevel?: string }): Observable<TopicRequest[]> {
     let url = `${this.aiApiUrl}/topic-requests?`;
     if (params.accountId) url += `accountId=${params.accountId}&`;
-    if (params.role) url += `role=${params.role}`;
+    if (params.role) url += `role=${params.role}&`;
+    if (params.academicLevel) url += `academicLevel=${encodeURIComponent(params.academicLevel)}`;
     return this.http.get<TopicRequest[]>(url);
   }
 
@@ -100,5 +103,11 @@ export class AIQuestionService {
 
   getGeneratedPDFs(subjectId: number): Observable<GeneratedPDF[]> {
     return this.http.get<GeneratedPDF[]>(`${this.aiApiUrl}/generated-pdfs/${subjectId}`);
+  }
+
+  getRequestFiles(id: number): Observable<{ name: string, url: string }[]> {
+    const url = `${this.aiApiUrl}/topic-requests/${id}/files`;
+    console.log(`[DEBUG] Calling getRequestFiles URL: ${url}`);
+    return this.http.get<{ name: string, url: string }[]>(url);
   }
 }

@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AIQuestionService, GradeLevel, Subject, Question, TopicRequest } from './ai-question.service';
-import { AccountService } from '@app/_services';
+import { AccountService } from '@app/_services/account.service';
+import { SectionService } from '@app/_services/section.service';
+import { Role } from '@app/_models';
 
 @Component({
   selector: 'app-ai-upload',
   templateUrl: './ai-upload.component.html'
 })
 export class AIUploadComponent implements OnInit {
-  selectedFile: File | null = null;
+  selectedFiles: File[] = [];
   academicLevels: string[] = ['Primary Education', 'Secondary Education', 'Senior High School', 'Tertiary Education'];
   selectedAcademicLevel: string = '';
   gradeLevels: GradeLevel[] = [];
@@ -28,11 +30,17 @@ export class AIUploadComponent implements OnInit {
 
   constructor(
     private aiService: AIQuestionService,
+    private sectionService: SectionService,
     private accountService: AccountService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    const account = this.accountService.accountValue;
+    if (account && account.role === Role.Coordinator && account.assignedLevel) {
+      this.academicLevels = [account.assignedLevel];
+      this.selectedAcademicLevel = account.assignedLevel;
+    }
     this.loadGradeLevels();
   }
 
@@ -105,6 +113,19 @@ export class AIUploadComponent implements OnInit {
         if (this.selectedAcademicLevel?.toLowerCase() === 'tertiary education') {
           // Strictly only allow 1st and 2nd Semester for Tertiary
           this.sections = secs.filter(s => s.name === '1st Semester' || s.name === '2nd Semester');
+
+          // AUTO-INITIALIZE: If semesters are missing, create them!
+          const has1st = this.sections.some(s => s.name === '1st Semester');
+          const has2nd = this.sections.some(s => s.name === '2nd Semester');
+
+          if (!has1st) {
+            this.sectionService.create(this.selectedGradeLevelId!, '1st Semester', this.selectedStrand!).subscribe(() => this.onStrandChange());
+            return;
+          }
+          if (!has2nd) {
+            this.sectionService.create(this.selectedGradeLevelId!, '2nd Semester', this.selectedStrand!).subscribe(() => this.onStrandChange());
+            return;
+          }
         } else {
           this.sections = secs;
         }
@@ -132,13 +153,13 @@ export class AIUploadComponent implements OnInit {
   }
 
   onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0] || null;
+    this.selectedFiles = Array.from(event.target.files) as File[];
   }
 
   submitTopicRequest() {
     const account = this.accountService.accountValue;
     // Strict subject validation: selectedSubjectId is always required
-    if (!this.selectedFile || !this.selectedGradeLevelId || !this.selectedSectionId || !this.selectedSubjectId || !account) {
+    if (this.selectedFiles.length === 0 || !this.selectedGradeLevelId || !this.selectedSectionId || !this.selectedSubjectId || !account) {
       this.errorMsg = 'Please fulfill all required fields';
       return;
     }
@@ -148,7 +169,7 @@ export class AIUploadComponent implements OnInit {
     this.successMsg = '';
 
     this.aiService.submitTopicRequest(
-      this.selectedFile,
+      this.selectedFiles,
       Number(account.id),
       Number(this.selectedGradeLevelId),
       Number(this.selectedSectionId),
@@ -157,8 +178,9 @@ export class AIUploadComponent implements OnInit {
       .subscribe({
         next: res => {
           this.loading = false;
-          this.successMsg = '✅ Topic submitted for Admin approval successfully!';
-          this.selectedFile = null;
+          this.successMsg = `✅ ${this.selectedFiles.length} topic(s) submitted for Admin approval successfully!`;
+          this.selectedFiles = [];
+          // Reset file input if needed (manual reset via template variable is better but this is the logic)
         },
         error: err => {
           this.errorMsg = 'Server error submitting topic';

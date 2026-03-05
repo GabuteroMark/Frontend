@@ -48,7 +48,11 @@ export class SubmissionHistoryComponent implements OnInit {
 
         this.userRole = account.role as string;
         this.loading = true;
-        this.aiService.getTopicRequests({ accountId: Number(account.id), role: account.role })
+        this.aiService.getTopicRequests({
+            accountId: Number(account.id),
+            role: account.role,
+            academicLevel: account.role === 'Coordinator' ? account.assignedLevel : undefined
+        })
             .subscribe({
                 next: requests => {
                     this.myRequests = requests;

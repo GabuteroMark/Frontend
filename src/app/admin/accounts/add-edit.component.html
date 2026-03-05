@@ -187,6 +187,22 @@
           Role is required
         </div>
       </div>
+
+      <!-- Assigned Academic Level — shown only when Coordinator is selected -->
+      <div class="col-md-6 mb-4" *ngIf="f.role.value === 'Coordinator'">
+        <label class="form-label">Assigned Academic Level</label>
+        <select formControlName="assignedLevel" class="form-select"
+          [ngClass]="{ 'is-invalid': submitted && f.assignedLevel?.errors }">
+          <option value="">— Select Level —</option>
+          <option value="Primary Education">Primary Education</option>
+          <option value="Secondary Education">Secondary Education</option>
+          <option value="Senior High School">Senior High School</option>
+          <option value="Tertiary Education">Tertiary Education</option>
+        </select>
+        <div *ngIf="submitted && f.assignedLevel?.errors" class="invalid-feedback">
+          Please select an academic level for this coordinator
+        </div>
+      </div>
     </div>
 
     <!-- Password Section -->

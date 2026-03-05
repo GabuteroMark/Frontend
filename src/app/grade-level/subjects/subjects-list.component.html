@@ -173,8 +173,17 @@
           <span *ngIf="selectedStrand" class="ms-2 badge bg-white text-primary rounded-pill fs-6 align-middle">
             {{ selectedStrand }}
           </span>
+          <span *ngIf="selectedSemester" class="ms-2 badge bg-info text-white rounded-pill fs-6 align-middle">
+            {{ selectedSemester }}
+          </span>
         </h3>
-        <p class="grade-subtitle mb-0">Management Center for Educational Sections</p>
+        <p class="grade-subtitle mb-0">
+          {{ (selectedStrand && selectedSemester) ? 'Managing subjects for ' + selectedStrand + ' - ' + selectedSemester
+          :
+          (selectedStrand ? 'Select a semester for ' + selectedStrand :
+          (academicLevel === 'Tertiary Education' ? 'Select a year level program.' : 'Management Center for Educational
+          Sections')) }}
+        </p>
       </div>
       <div class="d-flex gap-3">
         <button class="btn btn-pill btn-light shadow-sm" (click)="goBack()">
@@ -241,7 +250,7 @@
 
     <!-- CASE 2: SECTION LIST -->
     <div class="card-body p-0"
-      *ngIf="(gradeLevelName !== 'Grade 11' && gradeLevelName !== 'Grade 12' && academicLevel !== 'Tertiary Education') || (selectedStrand && (academicLevel !== 'Tertiary Education' || selectedSemester))">
+      *ngIf="(gradeLevelName !== 'Grade 11' && gradeLevelName !== 'Grade 12' && academicLevel !== 'Tertiary Education') || (selectedStrand && academicLevel !== 'Tertiary Education') || (selectedStrand && academicLevel === 'Tertiary Education' && selectedSemester)">
       <div class="table-padding">
         <div class="table-responsive">
           <table class="table modern-table mb-0">
