@@ -130,6 +130,27 @@
     <div class="premium-body">
       <form [formGroup]="form" (ngSubmit)="submit()">
 
+        <div class="mb-4"
+          *ngIf="gradeLevelName === 'Grade 11' || gradeLevelName === 'Grade 12' || academicLevel === 'Tertiary Education'">
+          <label class="label-elite">
+            {{ academicLevel === 'Tertiary Education' ? 'Year Level Assignment' : 'Strand Specialization' }}
+          </label>
+          <select class="input-elite" formControlName="strand">
+            <option value="">Select {{ academicLevel === 'Tertiary Education' ? 'Year Level' : 'Strand' }}</option>
+            <ng-container *ngIf="academicLevel !== 'Tertiary Education'">
+              <option *ngFor="let s of strands" [value]="s">{{ s }}</option>
+            </ng-container>
+            <ng-container *ngIf="academicLevel === 'Tertiary Education'">
+              <option *ngFor="let yl of yearLevels" [value]="yl">{{ yl }}</option>
+            </ng-container>
+          </select>
+          <div class="text-danger small mt-2 fw-medium"
+            *ngIf="form.controls.strand.invalid && form.controls.strand.touched">
+            <i class="bi bi-exclamation-circle me-1"></i>
+            Strand Selection is required
+          </div>
+        </div>
+
         <div class="mb-5">
           <label class="label-elite">
             {{ academicLevel === 'Tertiary Education' ? 'Academic Year Designation' : 'Sectional Assignment' }}

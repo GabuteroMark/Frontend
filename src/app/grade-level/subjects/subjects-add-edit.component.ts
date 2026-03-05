@@ -15,6 +15,8 @@ export class SubjectsAddEditComponent implements OnInit {
   gradeLevelId!: number;
   gradeLevelName = '';
   academicLevel = '';
+  strands = ['GAS', 'ABM', 'STEM', 'HUMMS', 'TVL'];
+  yearLevels = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
 
   title = '';
   submitting = false;
@@ -57,7 +59,8 @@ export class SubjectsAddEditComponent implements OnInit {
     });
 
     this.form = this.fb.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      strand: ['']
     });
 
     if (this.sectionId) {
@@ -75,14 +78,19 @@ export class SubjectsAddEditComponent implements OnInit {
 
     const rawName = this.form.value.name || '';
     const capitalizedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    const strand = this.form.value.strand || null;
 
     if (this.sectionId) {
-      this.sectionService.update(this.gradeLevelId, this.sectionId, capitalizedName).subscribe(() => {
-        this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`]);
+      this.sectionService.update(this.gradeLevelId, this.sectionId, capitalizedName, strand).subscribe(() => {
+        this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`], {
+          queryParams: { strand: strand }
+        });
       });
     } else {
-      this.sectionService.create(this.gradeLevelId, capitalizedName).subscribe(() => {
-        this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`]);
+      this.sectionService.create(this.gradeLevelId, capitalizedName, strand).subscribe(() => {
+        this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`], {
+          queryParams: { strand: strand }
+        });
       });
     }
   }

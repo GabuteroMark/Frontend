@@ -15,9 +15,13 @@ export class AIUploadComponent implements OnInit {
   filteredGradeLevels: GradeLevel[] = [];
   selectedGradeLevelId: number | null = null;
   sections: any[] = [];
+  selectedStrand: string | null = null;
   selectedSectionId: number | null = null;
   subjects: Subject[] = [];
   selectedSubjectId: number | null = null;
+
+  strands = ['GAS', 'ABM', 'STEM', 'HUMMS', 'TVL'];
+  yearLevels = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
   loading = false;
   errorMsg = '';
   successMsg = '';
@@ -54,6 +58,7 @@ export class AIUploadComponent implements OnInit {
 
   onAcademicLevelChange() {
     this.selectedGradeLevelId = null;
+    this.selectedStrand = null;
     this.selectedSectionId = null;
     this.selectedSubjectId = null;
     this.sections = [];
@@ -65,6 +70,7 @@ export class AIUploadComponent implements OnInit {
   }
 
   onGradeLevelChange() {
+    this.selectedStrand = null;
     this.selectedSectionId = null;
     this.selectedSubjectId = null;
     this.sections = [];
@@ -73,8 +79,36 @@ export class AIUploadComponent implements OnInit {
     this.errorMsg = '';
     if (!this.selectedGradeLevelId) return;
 
+    // If it's SHS or Tertiary, we wait for Strand/Year selection
+    const g = this.filteredGradeLevels.find(x => x.id == this.selectedGradeLevelId);
+    if (g && (g.name.includes('Grade 11') || g.name.includes('Grade 12') || this.selectedAcademicLevel === 'Tertiary Education')) {
+      return;
+    }
+
     this.aiService.getSections(this.selectedGradeLevelId).subscribe({
       next: secs => this.sections = secs,
+      error: err => console.error(err)
+    });
+  }
+
+  onStrandChange() {
+    this.selectedSectionId = null;
+    this.selectedSubjectId = null;
+    this.sections = [];
+    this.subjects = [];
+    this.successMsg = '';
+    this.errorMsg = '';
+    if (!this.selectedGradeLevelId || !this.selectedStrand) return;
+
+    this.aiService.getSections(this.selectedGradeLevelId, this.selectedStrand).subscribe({
+      next: secs => {
+        if (this.selectedAcademicLevel?.toLowerCase() === 'tertiary education') {
+          // Strictly only allow 1st and 2nd Semester for Tertiary
+          this.sections = secs.filter(s => s.name === '1st Semester' || s.name === '2nd Semester');
+        } else {
+          this.sections = secs;
+        }
+      },
       error: err => console.error(err)
     });
   }
@@ -103,8 +137,9 @@ export class AIUploadComponent implements OnInit {
 
   submitTopicRequest() {
     const account = this.accountService.accountValue;
+    // Strict subject validation: selectedSubjectId is always required
     if (!this.selectedFile || !this.selectedGradeLevelId || !this.selectedSectionId || !this.selectedSubjectId || !account) {
-      this.errorMsg = 'Please select file, grade level, section, and subject';
+      this.errorMsg = 'Please fulfill all required fields';
       return;
     }
 
@@ -112,7 +147,13 @@ export class AIUploadComponent implements OnInit {
     this.errorMsg = '';
     this.successMsg = '';
 
-    this.aiService.submitTopicRequest(this.selectedFile, Number(account.id), this.selectedGradeLevelId, this.selectedSectionId, this.selectedSubjectId)
+    this.aiService.submitTopicRequest(
+      this.selectedFile,
+      Number(account.id),
+      Number(this.selectedGradeLevelId),
+      Number(this.selectedSectionId),
+      Number(this.selectedSubjectId)
+    )
       .subscribe({
         next: res => {
           this.loading = false;

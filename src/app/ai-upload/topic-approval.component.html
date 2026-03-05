@@ -201,6 +201,27 @@
             <div *ngIf="errorMsg" class="alert alert-danger mx-3 mt-3">{{ errorMsg }}</div>
             <div *ngIf="successMsg" class="alert alert-success mx-3 mt-3">{{ successMsg }}</div>
 
+            <div class="row g-3 mb-4 px-3">
+                <div class="col-md-9">
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-4">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 py-3 rounded-end-pill"
+                            placeholder="Search by instructor, file, or hierarchical path..." [(ngModel)]="searchTerm">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-4">
+                            <i class="bi bi-calendar3 text-muted"></i>
+                        </span>
+                        <input type="date" class="form-control border-start-0 py-3 rounded-end-pill"
+                            [(ngModel)]="filterDate">
+                    </div>
+                </div>
+            </div>
+
             <div class="table-container pt-0">
                 <div class="table-responsive" style="max-height: 65vh; overflow-y: auto;">
                     <table class="table custom-table">
@@ -216,7 +237,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let req of requests">
+                            <tr *ngFor="let req of filteredRequests">
                                 <td>
                                     <div class="fw-bold text-dark">{{ req.firstName }} {{ req.lastName }}</div>
                                     <small class="text-muted">Teacher Access</small>

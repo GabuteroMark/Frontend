@@ -168,20 +168,80 @@
   <div class="grade-card shadow-lg">
     <div class="grade-header d-flex justify-content-between align-items-center">
       <div>
-        <h3 class="grade-title">{{ gradeLevelName }}</h3>
+        <h3 class="grade-title">
+          {{ gradeLevelName }}
+          <span *ngIf="selectedStrand" class="ms-2 badge bg-white text-primary rounded-pill fs-6 align-middle">
+            {{ selectedStrand }}
+          </span>
+        </h3>
         <p class="grade-subtitle mb-0">Management Center for Educational Sections</p>
       </div>
       <div class="d-flex gap-3">
         <button class="btn btn-pill btn-light shadow-sm" (click)="goBack()">
-          <i class="bi bi-arrow-left me-2"></i> Return
+          <i class="bi bi-arrow-left me-2"></i> {{ ((gradeLevelName === 'Grade 11' || gradeLevelName === 'Grade 12' ||
+          academicLevel === 'Tertiary Education') &&
+          selectedStrand) ? 'Change View' :
+          'Return' }}
         </button>
-        <button class="btn btn-pill btn-add shadow-sm" (click)="addSection()">
+        <button
+          *ngIf="((gradeLevelName !== 'Grade 11' && gradeLevelName !== 'Grade 12' && academicLevel !== 'Tertiary Education') || selectedStrand) && academicLevel !== 'Tertiary Education'"
+          class="btn btn-pill btn-add shadow-sm" (click)="addSection()">
           <i class="bi bi-plus-lg me-2"></i> New Section
         </button>
       </div>
     </div>
 
-    <div class="card-body p-0">
+    <!-- CASE 1: STRAND SELECTION FOR GRADE 11/12 & YEAR LEVEL FOR TERTIARY -->
+    <div class="card-body p-5"
+      *ngIf="(gradeLevelName === 'Grade 11' || gradeLevelName === 'Grade 12' || academicLevel === 'Tertiary Education') && !selectedStrand && !selectedSemester">
+      <div class="text-center mb-5">
+        <h4 class="fw-bold text-dark">{{ academicLevel === 'Tertiary Education' ? 'Select Year Level' : 'Select Academic
+          Strand' }}</h4>
+        <p class="text-muted">
+          {{ (loading && academicLevel === 'Tertiary Education') ? 'Syncing subjects for this year level...' :
+          (academicLevel === 'Tertiary Education' ? 'Manage subjects organized by year level.' : 'Manage sections and
+          subjects organized by strand specialization.') }}
+        </p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4 col-sm-6"
+          *ngFor="let item of (academicLevel === 'Tertiary Education' ? yearLevels : strands)">
+          <div class="strand-card p-4 text-center shadow-sm" (click)="selectStrand(item)">
+            <div class="strand-icon mb-3">
+              <i class="bi"
+                [ngClass]="academicLevel === 'Tertiary Education' ? 'bi-calendar3' : 'bi-mortarboard-fill'"></i>
+            </div>
+            <h5 class="fw-bold mb-1">{{ item }}</h5>
+            <small class="text-muted d-block">View Sections</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CASE 1.5: SEMESTER SELECTION FOR TERTIARY -->
+    <div class="card-body p-5" *ngIf="academicLevel === 'Tertiary Education' && selectedStrand && !selectedSemester">
+      <div class="text-center mb-5">
+        <h4 class="fw-bold text-dark">Select Semester</h4>
+        <p class="text-muted">
+          Manage sections and subjects organized by semester for {{ selectedStrand }}.
+        </p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4 col-sm-6" *ngFor="let semester of semesters">
+          <div class="strand-card p-4 text-center shadow-sm" (click)="selectSemester(semester)">
+            <div class="strand-icon mb-3">
+              <i class="bi bi-book-half"></i>
+            </div>
+            <h5 class="fw-bold mb-1">{{ semester }}</h5>
+            <small class="text-muted d-block">View Sections</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CASE 2: SECTION LIST -->
+    <div class="card-body p-0"
+      *ngIf="(gradeLevelName !== 'Grade 11' && gradeLevelName !== 'Grade 12' && academicLevel !== 'Tertiary Education') || (selectedStrand && (academicLevel !== 'Tertiary Education' || selectedSemester))">
       <div class="table-padding">
         <div class="table-responsive">
           <table class="table modern-table mb-0">
@@ -231,7 +291,9 @@
               <tr *ngIf="!loading && sections.length === 0">
                 <td colspan="3" class="text-center py-5 text-muted">
                   <i class="bi bi-card-list fs-1 d-block mb-3 opacity-25"></i>
-                  No sections have been initialized for this grade level.
+                  No sections have been initialized for this {{ (gradeLevelName === 'Grade 11' || gradeLevelName
+                  === 'Grade 12' || academicLevel === 'Tertiary Education') ? (academicLevel === 'Tertiary Education' ?
+                  'year level' : 'strand') : 'grade level' }}.
                 </td>
               </tr>
             </tbody>
@@ -241,3 +303,37 @@
     </div>
   </div>
 </div>
+
+<style>
+  /* Extra styles for strands */
+  .strand-card {
+    background: #ffffff;
+    border: 2px solid #f1f5f9;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .strand-card:hover {
+    border-color: #4f46e5;
+    background: #f5f3ff;
+    transform: translateY(-5px);
+  }
+
+  .strand-icon {
+    width: 60px;
+    height: 60px;
+    background: #eff6ff;
+    color: #3b82f6;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .strand-card:hover .strand-icon {
+    background: #4f46e5;
+    color: white;
+  }
+</style>

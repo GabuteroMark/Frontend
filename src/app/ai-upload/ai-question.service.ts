@@ -31,6 +31,7 @@ export interface TopicRequest {
   firstName?: string;
   lastName?: string;
   generatedPdfUrl?: string;
+  requestFileUrl?: string;
 }
 
 export interface GeneratedPDF {
@@ -52,12 +53,20 @@ export class AIQuestionService {
     return this.http.get<GradeLevel[]>(`${this.mainApiUrl}/grade-levels`);
   }
 
-  getSections(gradeLevelId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.mainApiUrl}/grade-levels/${gradeLevelId}/sections`);
+  getSections(gradeLevelId: number, strand?: string): Observable<any[]> {
+    let url = `${this.mainApiUrl}/grade-levels/${gradeLevelId}/sections`;
+    if (strand) {
+      url += `?strand=${strand}`;
+    }
+    return this.http.get<any[]>(url);
   }
 
   getSubjects(sectionId: number): Observable<Subject[]> {
     return this.http.get<Subject[]>(`${this.mainApiUrl}/sections/${sectionId}/subjects`);
+  }
+
+  createSubject(sectionId: number, name: string): Observable<Subject> {
+    return this.http.post<Subject>(`${this.mainApiUrl}/sections/${sectionId}/subjects`, { name });
   }
 
   // Teacher submits for approval

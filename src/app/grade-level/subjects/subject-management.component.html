@@ -198,7 +198,11 @@
                     }}</a>
             </li>
             <li class="breadcrumb-item">
-                <a (click)="goBack()" style="cursor: pointer;">{{ gradeLevelName }}</a>
+                <a (click)="goBack()" style="cursor: pointer;">
+                    {{ gradeLevelName }}
+                    <span *ngIf="selectedStrand">({{ selectedStrand }})</span>
+                    <span *ngIf="selectedSemester"> - {{ selectedSemester }}</span>
+                </a>
             </li>
             <li class="breadcrumb-item active">{{ sectionName }}</li>
         </ol>
@@ -208,13 +212,17 @@
         <div class="header-visual d-flex justify-content-between align-items-center">
             <div>
                 <h1 class="page-title">{{ gradeLevelName || 'Loading...' }}</h1>
-                <p class="mb-0 fw-bold opacity-75">
+                <p class="mb-0 fw-bold opacity-75" *ngIf="academicLevel !== 'Tertiary Education'">
                     <i class="bi bi-geo-alt-fill me-1"></i> Section: {{ sectionName || 'Initializing...' }}
+                </p>
+                <p class="mb-0 fw-bold opacity-75" *ngIf="academicLevel === 'Tertiary Education'">
+                    <i class="bi bi-calendar3 me-1"></i> {{ selectedStrand }} - {{ selectedSemester }}
                 </p>
             </div>
             <div class="d-flex gap-3">
                 <button class="btn btn-modern btn-light shadow-sm" (click)="goBack()">
-                    <i class="bi bi-arrow-left"></i> Sub-Sections
+                    <i class="bi bi-arrow-left"></i> {{ academicLevel === 'Tertiary Education' ? 'Change Semester' :
+                    'Sub-Sections' }}
                 </button>
                 <button class="btn btn-modern btn-primary-gradient shadow-sm" (click)="addSubject()">
                     <i class="bi bi-plus-lg"></i> Add Identifier
@@ -323,6 +331,41 @@
             <div class="modal-footer border-0 p-4">
                 <button type="button" class="btn btn-modern btn-light px-4" (click)="closePdfModal()">Dismiss
                     View</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Subject Modal -->
+<div class="modal d-block glass-modal" *ngIf="showAddSubjectModal" style="z-index: 2000;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-premium shadow-2xl">
+            <div class="modal-header border-0 bg-dark text-white p-4">
+                <h5 class="modal-title fw-800 fs-4">
+                    <i class="bi bi-plus-circle-fill me-2 text-primary"></i>
+                    Add New Identifier
+                </h5>
+                <button type="button" class="btn-close btn-close-white" (click)="closeAddSubjectModal()"
+                    [disabled]="isAddingSubject"></button>
+            </div>
+            <div class="modal-body p-4 bg-white">
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-dark">Identifier / Subject Curriculum</label>
+                    <input type="text"
+                        class="form-control form-control-lg bg-light border-0 py-3 px-4 shadow-sm text-dark mt-2"
+                        style="text-transform: uppercase;" placeholder="e.g. Fundamental Mathematics"
+                        [(ngModel)]="newSubjectName" [disabled]="isAddingSubject" (keyup.enter)="submitNewSubject()">
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-4 pt-0">
+                <button type="button" class="btn btn-modern btn-light px-4" (click)="closeAddSubjectModal()"
+                    [disabled]="isAddingSubject">Dismiss</button>
+                <button type="button" class="btn btn-modern btn-primary-gradient px-4" (click)="submitNewSubject()"
+                    [disabled]="isAddingSubject || !newSubjectName?.trim()">
+                    <span *ngIf="isAddingSubject" class="spinner-border spinner-border-sm me-2" role="status"
+                        aria-hidden="true"></span>
+                    <i *ngIf="!isAddingSubject" class="bi bi-check-lg"></i> Complete Setup
+                </button>
             </div>
         </div>
     </div>

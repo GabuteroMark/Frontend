@@ -13,6 +13,26 @@ export class TopicApprovalComponent implements OnInit {
     loadingId: number | null = null;
     errorMsg = '';
     successMsg = '';
+    searchTerm: string = '';
+    filterDate: string = '';
+
+    get filteredRequests() {
+        return this.requests.filter(req => {
+            const searchLower = this.searchTerm.toLowerCase();
+            const matchesSearch = !this.searchTerm ||
+                (req.firstName?.toLowerCase().includes(searchLower)) ||
+                (req.lastName?.toLowerCase().includes(searchLower)) ||
+                (req.fileName?.toLowerCase().includes(searchLower)) ||
+                (req.subjectName?.toLowerCase().includes(searchLower)) ||
+                (req.sectionName?.toLowerCase().includes(searchLower)) ||
+                (req.gradeLevelName?.toLowerCase().includes(searchLower));
+
+            const matchesDate = !this.filterDate ||
+                (new Date(req.createdAt).toDateString() === new Date(this.filterDate).toDateString());
+
+            return matchesSearch && matchesDate;
+        });
+    }
 
     constructor(
         private aiService: AIQuestionService,
@@ -25,8 +45,10 @@ export class TopicApprovalComponent implements OnInit {
     }
 
     laodRequests() {
-        const role = this.accountService.accountValue?.role;
-        this.aiService.getTopicRequests({ role: role })
+        const account = this.accountService.accountValue;
+        if (!account) return;
+
+        this.aiService.getTopicRequests({ role: account.role, accountId: Number(account.id) })
             .subscribe({
                 next: res => this.requests = res,
                 error: err => console.error(err)
@@ -66,7 +88,14 @@ export class TopicApprovalComponent implements OnInit {
     }
 
     viewPDF(req: TopicRequest) {
-        window.open(`http://localhost:5000/download/requests/${req.fileName.split('/').pop()}`, '_blank');
+        if (req.requestFileUrl) {
+            window.open(`http://localhost:5000${req.requestFileUrl}`, '_blank');
+        } else if (req.fileName.startsWith("Multiple Files")) {
+            alert("This request contains multiple files. Please check the 'uploads' folder on the server.");
+        } else {
+            // Fallback for older records if any
+            window.open(`http://localhost:5000/download/requests/${req.fileName.split('/').pop()}`, '_blank');
+        }
     }
 
     viewGeneratedPDF(req: any) {

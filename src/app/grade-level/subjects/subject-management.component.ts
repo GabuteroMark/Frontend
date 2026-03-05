@@ -30,12 +30,18 @@ export class SubjectManagementComponent implements OnInit {
     sectionName = 'Loading...';
     gradeLevelName = 'Loading...';
     academicLevel = '';
+    selectedStrand = '';
+    selectedSemester = '';
 
     showPdfModal = false;
     pdfsForSubject: SubjectPDF[] = [];
     selectedSubjectName = '';
     loadingPDFs = false;
     autoOpenSubjectId: number | null = null;
+
+    showAddSubjectModal = false;
+    newSubjectName = '';
+    isAddingSubject = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -91,6 +97,8 @@ export class SubjectManagementComponent implements OnInit {
         this.route.queryParams.subscribe(params => {
             console.log('Query Params:', params);
             if (params.academicLevel) this.academicLevel = params.academicLevel;
+            if (params.strand) this.selectedStrand = params.strand;
+            if (params.semester) this.selectedSemester = params.semester;
             if (params.sectionName) this.sectionName = params.sectionName;
 
             if (params.openPdfModal) {
@@ -130,7 +138,33 @@ export class SubjectManagementComponent implements OnInit {
     }
 
     addSubject(): void {
-        alert('To add/edit subjects, please use the separate Subject management.');
+        this.newSubjectName = '';
+        this.showAddSubjectModal = true;
+    }
+
+    closeAddSubjectModal(): void {
+        this.showAddSubjectModal = false;
+        this.newSubjectName = '';
+    }
+
+    submitNewSubject(): void {
+        const name = this.newSubjectName?.trim().toUpperCase();
+        if (!name) return;
+
+        this.isAddingSubject = true;
+        this.http.post<Subject>(`${environment.apiUrl}/api/sections/${this.sectionId}/subjects`, { name })
+            .subscribe({
+                next: (res) => {
+                    this.isAddingSubject = false;
+                    this.closeAddSubjectModal();
+                    this.loadSubjects(); // Refresh the list
+                },
+                error: (err) => {
+                    console.error('Error adding subject:', err);
+                    this.isAddingSubject = false;
+                    alert('Failed to add identifier. Please try again.');
+                }
+            });
     }
 
     viewSubjectPDFs(subjectId: number, subjectName: string) {
@@ -166,8 +200,13 @@ export class SubjectManagementComponent implements OnInit {
     }
 
     goBack(): void {
+        const isTertiary = this.academicLevel === 'Tertiary Education';
         this.router.navigate([`/grade-level/${this.gradeLevelId}/sections`], {
-            queryParams: { academicLevel: this.academicLevel }
+            queryParams: {
+                academicLevel: this.academicLevel,
+                strand: this.selectedStrand,
+                semester: isTertiary ? null : this.selectedSemester // In Tertiary, go back to Semester selection
+            }
         });
     }
 }

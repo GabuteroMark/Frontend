@@ -10,6 +10,27 @@ import { AccountService } from '@app/_services';
 export class SubmissionHistoryComponent implements OnInit {
     myRequests: TopicRequest[] = [];
     loading = false;
+    userRole: string = '';
+    searchTerm: string = '';
+    filterDate: string = '';
+
+    get filteredRequests() {
+        return this.myRequests.filter(req => {
+            const searchLower = this.searchTerm.toLowerCase();
+            const matchesSearch = !this.searchTerm ||
+                (req.firstName?.toLowerCase().includes(searchLower)) ||
+                (req.lastName?.toLowerCase().includes(searchLower)) ||
+                (req.fileName?.toLowerCase().includes(searchLower)) ||
+                (req.subjectName?.toLowerCase().includes(searchLower)) ||
+                (req.sectionName?.toLowerCase().includes(searchLower)) ||
+                (req.gradeLevelName?.toLowerCase().includes(searchLower));
+
+            const matchesDate = !this.filterDate ||
+                (new Date(req.createdAt).toDateString() === new Date(this.filterDate).toDateString());
+
+            return matchesSearch && matchesDate;
+        });
+    }
 
     constructor(
         private aiService: AIQuestionService,
@@ -25,6 +46,7 @@ export class SubmissionHistoryComponent implements OnInit {
         const account = this.accountService.accountValue;
         if (!account) return;
 
+        this.userRole = account.role as string;
         this.loading = true;
         this.aiService.getTopicRequests({ accountId: Number(account.id), role: account.role })
             .subscribe({

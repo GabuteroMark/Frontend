@@ -13,10 +13,18 @@
 
     <!-- Header -->
     <div class="sidebar-header">
-      <h1 class="title">Teacher Evaluation System</h1>
-      <button class="toggle-btn d-none d-lg-block">
-        <i class="bi bi-list-nested"></i>
-      </button>
+      <ng-container *ngIf="account && account.role === Role.Coordinator">
+        <h1 class="title">Coordinator Dashboard</h1>
+      </ng-container>
+      <ng-container *ngIf="account && account.role === Role.Teacher">
+        <h1 class="title">Teacher Dashboard</h1>
+      </ng-container>
+      <ng-container *ngIf="account && account.role !== Role.Coordinator && account.role !== Role.Teacher">
+        <h1 class="title">Teacher Evaluation System</h1>
+        <button class="toggle-btn d-none d-lg-block">
+          <i class="bi bi-list-nested"></i>
+        </button>
+      </ng-container>
     </div>
 
     <!-- Navigation -->
@@ -37,16 +45,19 @@
         <span>Academic Level</span>
       </a>
 
-      <!-- Student Registration -->
-      <a *ngIf="account && account.role === Role.Admin" routerLink="/student-registration"
-        routerLinkActive="active-link" class="nav-item-link">
-        <i class="bi bi-person-plus"></i>
-        <span>Student Registration</span>
+      <!-- Manage Accounts -->
+      <a *ngIf="account && account.role === Role.Admin" routerLink="/admin/accounts" routerLinkActive="active-link"
+        class="nav-item-link">
+        <i class="bi bi-people"></i>
+        <span>Manage Accounts</span>
       </a>
+
+
 
       <!-- Submission of PDFs -->
       <a *ngIf="account && (account.role === Role.Admin || account.role === Role.Teacher || account.role === Role.Coordinator)"
-        routerLink="/ai-upload" routerLinkActive="active-link" class="nav-item-link">
+        routerLink="/ai-upload" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item-link">
         <i class="bi bi-filetype-pdf"></i>
         <span>Submission of PDFs</span>
       </a>

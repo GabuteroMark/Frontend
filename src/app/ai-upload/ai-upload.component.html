@@ -296,20 +296,35 @@
         </div>
 
         <div class="col-lg-3 col-md-6">
-          <label class="label-elite">Grade Index</label>
+          <label class="label-elite">{{ selectedAcademicLevel?.toLowerCase() === 'tertiary education' ? 'Course' :
+            'Grade Index' }}</label>
           <select class="select-elite" [(ngModel)]="selectedGradeLevelId" (change)="onGradeLevelChange()"
             [disabled]="!selectedAcademicLevel">
-            <option value="">Select Grade</option>
+            <option value="">Select {{ selectedAcademicLevel?.toLowerCase() === 'tertiary education' ? 'Course' :
+              'Grade' }}</option>
             <option *ngFor="let g of filteredGradeLevels" [value]="g.id">{{ g.name }}</option>
           </select>
         </div>
 
+        <div class="col-lg-3 col-md-6"
+          *ngIf="selectedAcademicLevel === 'Senior High School' || selectedAcademicLevel === 'Tertiary Education'">
+          <label class="label-elite">{{ selectedAcademicLevel === 'Tertiary Education' ? 'Year Level' : 'Strand
+            Specialization' }}</label>
+          <select class="select-elite" [(ngModel)]="selectedStrand" (change)="onStrandChange()"
+            [disabled]="!selectedGradeLevelId">
+            <option value="">Select {{ selectedAcademicLevel === 'Tertiary Education' ? 'Year' : 'Strand' }}</option>
+            <option *ngFor="let item of (selectedAcademicLevel === 'Tertiary Education' ? yearLevels : strands)"
+              [value]="item">{{ item }}</option>
+          </select>
+        </div>
+
         <div class="col-lg-3 col-md-6">
-          <label class="label-elite">{{ selectedAcademicLevel === 'Tertiary Education' ? 'Academic Year' : 'Section'
+          <label class="label-elite">{{ selectedAcademicLevel === 'Tertiary Education' ? 'Semester' : 'Section'
             }}</label>
           <select class="select-elite" [(ngModel)]="selectedSectionId" (change)="onSectionChange()"
-            [disabled]="!selectedGradeLevelId">
-            <option value="">Select Assignment</option>
+            [disabled]="!selectedGradeLevelId || ((selectedAcademicLevel === 'Senior High School' || selectedAcademicLevel === 'Tertiary Education') && !selectedStrand)">
+            <option value="">Select {{ selectedAcademicLevel === 'Tertiary Education' ? 'Semester' : 'Assignment' }}
+            </option>
             <option *ngFor="let s of sections" [value]="s.id">{{ s.name }}</option>
           </select>
         </div>

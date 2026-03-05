@@ -13,6 +13,11 @@ export class SubjectsListComponent implements OnInit {
   gradeLevelId = 0;
   gradeLevelName = '';
   academicLevel = '';
+  selectedStrand = '';
+  selectedSemester = '';
+  strands = ['GAS', 'ABM', 'STEM', 'HUMMS', 'TVL'];
+  yearLevels = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
+  semesters = ['1st Semester', '2nd Semester'];
 
   constructor(
     private route: ActivatedRoute,
@@ -37,14 +42,50 @@ export class SubjectsListComponent implements OnInit {
 
     this.route.queryParams.subscribe(params => {
       this.academicLevel = params.academicLevel || '';
+      this.selectedStrand = params.strand || '';
+      this.selectedSemester = params.semester || '';
+      this.loadSections();
     });
-
-    this.loadSections();
   }
 
   loadSections(): void {
+    // Tertiary Flow: 
+    if (this.academicLevel === 'Tertiary Education') {
+      if (!this.selectedStrand) {
+        this.sections = [];
+        return;
+      }
+      if (!this.selectedSemester) {
+        this.sections = [];
+        return;
+      }
+
+      // Both Year Level (strand) and Semester are selected
+      this.loading = true;
+      this.sectionService.getAll(this.gradeLevelId, this.selectedStrand).subscribe(res => {
+        const semesterSection = res.find(s => s.name === this.selectedSemester);
+        if (semesterSection) {
+          this.viewSubjects(semesterSection);
+        } else {
+          // Create the semester section if it doesn't exist
+          this.sectionService.create(this.gradeLevelId, this.selectedSemester, this.selectedStrand).subscribe(newSec => {
+            this.viewSubjects(newSec);
+          });
+        }
+      });
+      return;
+    }
+
+    const isSpecialized = this.gradeLevelName === 'Grade 11' ||
+      this.gradeLevelName === 'Grade 12';
+
+    if (isSpecialized && !this.selectedStrand) {
+      this.sections = [];
+      return;
+    }
+
     this.loading = true;
-    this.sectionService.getAll(this.gradeLevelId)
+    this.sectionService.getAll(this.gradeLevelId, this.selectedStrand)
       .subscribe({
         next: (res) => {
           this.sections = res || [];
@@ -59,14 +100,20 @@ export class SubjectsListComponent implements OnInit {
 
   addSection(): void {
     this.router.navigate([`/grade-level/${this.gradeLevelId}/sections/add`], {
-      queryParams: { academicLevel: this.academicLevel }
+      queryParams: {
+        academicLevel: this.academicLevel,
+        strand: this.selectedStrand
+      }
     });
   }
 
   editSection(id?: number): void {
     if (!id) return;
     this.router.navigate([`/grade-level/${this.gradeLevelId}/sections/edit/${id}`], {
-      queryParams: { academicLevel: this.academicLevel }
+      queryParams: {
+        academicLevel: this.academicLevel,
+        strand: this.selectedStrand
+      }
     });
   }
 
@@ -83,11 +130,64 @@ export class SubjectsListComponent implements OnInit {
 
   viewSubjects(section: Section): void {
     this.router.navigate([`/grade-level/${this.gradeLevelId}/sections/${section.id}/subjects`], {
-      queryParams: { academicLevel: this.academicLevel, sectionName: section.name }
+      queryParams: {
+        academicLevel: this.academicLevel,
+        sectionName: section.name,
+        strand: this.selectedStrand,
+        semester: this.selectedSemester
+      }
+    });
+  }
+
+  selectStrand(strand: string): void {
+    const params: any = { strand: strand };
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  selectSemester(semester: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { semester: semester },
+      queryParamsHandling: 'merge'
     });
   }
 
   goBack(): void {
+    const isSpecialized = this.gradeLevelName === 'Grade 11' ||
+      this.gradeLevelName === 'Grade 12';
+
+    if (isSpecialized && this.selectedStrand) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { strand: null },
+        queryParamsHandling: 'merge'
+      });
+      return;
+    }
+
+    if (this.academicLevel === 'Tertiary Education') {
+      if (this.selectedSemester) {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { semester: null },
+          queryParamsHandling: 'merge'
+        });
+        return;
+      }
+      if (this.selectedStrand) {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { strand: null },
+          queryParamsHandling: 'merge'
+        });
+        return;
+      }
+    }
+
     this.router.navigate(['/grade-level'], {
       queryParams: { academicLevel: this.academicLevel }
     });
