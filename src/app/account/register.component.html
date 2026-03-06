@@ -1,93 +1,371 @@
-﻿<h3 class="card-header text-center bg-primary text-white py-3">Register</h3>
-<div class="card-body">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="row">
-            <!-- Title Field -->
-            <div class="mb-3 col-md-4">
-                <label class="form-label">Title</label>
-                <select formControlName="title" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.title.errors }">
-                    <option value=""></option>
-                    <option value="Mr">Mr</option>
-                    <option value="Mrs">Mrs</option>
-                    <option value="Miss">Miss</option>
-                    <option value="Ms">Ms</option>
-                </select>
-                <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
-                    <div *ngIf="f.title.errors.required">Title is required</div>
-                </div>
-            </div>
-            <!-- First Name Field -->
-            <div class="mb-3 col-md-4">
-                <label class="form-label">First Name</label>
-                <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
-                <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-                    <div *ngIf="f.firstName.errors.required">First Name is required</div>
-                </div>
-            </div>
-            <!-- Last Name Field -->
-            <div class="mb-3 col-md-4">
-                <label class="form-label">Last Name</label>
-                <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
-                <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-                    <div *ngIf="f.lastName.errors.required">Last Name is required</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Email Field -->
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
-            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                <div *ngIf="f.email.errors.required">Email is required</div>
-                <div *ngIf="f.email.errors.email">Please enter a valid email address</div>
-            </div>
+﻿<style>
+    body {
+        margin: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f8fafc;
+    }
+
+    .register-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 24px;
+        background: #0f172a;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Dynamic Aura Background */
+    .aura-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .aura-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.15;
+        animation: drift 25s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+        width: 600px;
+        height: 600px;
+        background: #3b82f6;
+        top: -100px;
+        right: -100px;
+        animation-duration: 30s;
+    }
+
+    .blob-2 {
+        width: 500px;
+        height: 500px;
+        background: #6366f1;
+        bottom: -100px;
+        left: -100px;
+        animation-delay: -5s;
+        animation-duration: 35s;
+    }
+
+    .blob-3 {
+        width: 400px;
+        height: 400px;
+        background: #8b5cf6;
+        top: 40%;
+        left: 20%;
+        animation-delay: -10s;
+        animation-duration: 40s;
+    }
+
+    @keyframes drift {
+        0% {
+            transform: translate(0, 0) scale(1);
+        }
+
+        33% {
+            transform: translate(100px, -50px) scale(1.1);
+        }
+
+        66% {
+            transform: translate(-50px, 100px) scale(0.9);
+        }
+
+        100% {
+            transform: translate(0, 0) scale(1);
+        }
+    }
+
+    .register-card {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 800px;
+        background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+        padding: 64px;
+        border-radius: 32px;
+        box-shadow:
+            0 1px 3px rgba(0, 0, 0, 0.1),
+            0 20px 25px -5px rgba(0, 0, 0, 0.2),
+            0 30px 40px -10px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .brand-header {
+        margin-bottom: 48px;
+        text-align: center;
+    }
+
+    .brand-header h1 {
+        font-weight: 800;
+        color: #ffffff;
+        font-size: 2.5rem;
+        letter-spacing: -0.04em;
+        margin-bottom: 12px;
+    }
+
+    .brand-header p {
+        color: #94a3b8;
+        font-size: 1rem;
+        font-weight: 400;
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 0.8rem;
+        color: #cbd5e1;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        padding: 14px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.03);
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        color: #ffffff;
+    }
+
+    .form-select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1.25rem center;
+        background-size: 16px 12px;
+        padding-right: 48px;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        outline: none;
+        color: #ffffff;
+    }
+
+    .form-control::placeholder {
+        color: #475569;
+    }
+
+    .form-check-label {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        padding-left: 8px;
+        cursor: pointer;
+    }
+
+    .form-check-input {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: #60a5fa;
+        border-color: #60a5fa;
+    }
+
+    .btn-register {
+        border-radius: 12px;
+        padding: 16px 24px;
+        font-weight: 700;
+        font-size: 1rem;
+        background: #ffffff;
+        color: #0f172a;
+        border: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        min-width: 160px;
+    }
+
+    .btn-register:hover {
+        background: #f1f5f9;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-register:active {
+        transform: translateY(0);
+    }
+
+    .btn-register:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .footer-links {
+        margin-top: 40px;
+        padding-top: 32px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+    }
+
+    .footer-links span {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .link-primary {
+        color: #ffffff;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 0.9rem;
+        margin-left: 8px;
+        transition: color 0.2s;
+    }
+
+    .link-primary:hover {
+        color: #60a5fa;
+        text-decoration: underline;
+    }
+
+    option {
+        background-color: #1e293b;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .register-card {
+            padding: 40px 24px;
+        }
+    }
+</style>
+
+<div class="register-page">
+    <!-- Dynamic Aura Background -->
+    <div class="aura-container">
+        <div class="aura-blob blob-1"></div>
+        <div class="aura-blob blob-2"></div>
+        <div class="aura-blob blob-3"></div>
+    </div>
+
+    <div class="register-card animate__animated animate__fadeIn">
+
+        <div class="brand-header">
+            <h1>Create Account</h1>
+            <p>Join our professional question databank community</p>
         </div>
 
-        <!-- Phone Number Field -->
-        <div class="mb-3">
-            <label class="form-label">Phone Number</label>
-            <input type="text" formControlName="phoneNumber" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.phoneNumber.errors }" />
-            <div *ngIf="submitted && f.phoneNumber.errors" class="invalid-feedback">
-                <div *ngIf="f.phoneNumber.errors.required">Phone number is required</div>
-                <div *ngIf="f.phoneNumber.errors.pattern">Phone Number must be a valid Philippine mobile number (e.g., 09123456789)</div>
-            </div>
-        </div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="row g-4">
+                <!-- Title Field -->
+                <div class="col-md-4">
+                    <label class="form-label">Title</label>
+                    <select formControlName="title" class="form-select w-100"
+                        [ngClass]="{ 'is-invalid': submitted && f.title.errors }">
+                        <option value="">Select Title</option>
+                        <option value="Mr">Mr</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Ms">Ms</option>
+                    </select>
+                    <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+                        Title is required
+                    </div>
+                </div>
 
-        <!-- Password Fields -->
-        <div class="row">
-            <div class="mb-3 col-md-6">
-                <label class="form-label">Password</label>
-                <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                    <div *ngIf="f.password.errors.required">Password is required</div>
-                    <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+                <!-- First Name Field -->
+                <div class="col-md-4">
+                    <label class="form-label">First Name</label>
+                    <input type="text" formControlName="firstName" class="form-control w-100"
+                        [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" placeholder="John" />
+                    <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                        First Name is required
+                    </div>
+                </div>
+
+                <!-- Last Name Field -->
+                <div class="col-md-4">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" formControlName="lastName" class="form-control w-100"
+                        [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" placeholder="Doe" />
+                    <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                        Last Name is required
+                    </div>
+                </div>
+
+                <!-- Email Field -->
+                <div class="col-md-6">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" formControlName="email" class="form-control w-100"
+                        [ngClass]="{ 'is-invalid': submitted && f.email.errors }" placeholder="you@company.com" />
+                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                        <div *ngIf="f.email.errors.required">Email is required</div>
+                        <div *ngIf="f.email.errors.email">Invalid email format</div>
+                    </div>
+                </div>
+
+                <!-- Phone Number Field -->
+                <div class="col-md-6">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" formControlName="phoneNumber" class="form-control w-100"
+                        [ngClass]="{ 'is-invalid': submitted && f.phoneNumber.errors }" placeholder="09123456789" />
+                    <div *ngIf="submitted && f.phoneNumber.errors" class="invalid-feedback">
+                        <div *ngIf="f.phoneNumber.errors.required">Phone number is required</div>
+                        <div *ngIf="f.phoneNumber.errors.pattern">Invalid Philippine mobile format</div>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="col-md-6">
+                    <label class="form-label">Password</label>
+                    <input type="password" formControlName="password" class="form-control w-100"
+                        [ngClass]="{ 'is-invalid': submitted && f.password.errors }" placeholder="••••••••" />
+                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                        <div *ngIf="f.password.errors.required">Password is required</div>
+                        <div *ngIf="f.password.errors.minlength">Minimum 6 characters</div>
+                    </div>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="col-md-6">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" formControlName="confirmPassword" class="form-control w-100"
+                        [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" placeholder="••••••••" />
+                    <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                        <div *ngIf="f.confirmPassword.errors.required">Confirmation is required</div>
+                        <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+                    </div>
                 </div>
             </div>
-            <div class="mb-3 col-md-6">
-                <label class="form-label">Confirm Password</label>
-                <input type="password" formControlName="confirmPassword" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-                <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-                    <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
-                    <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+
+            <!-- Terms and Conditions -->
+            <div class="mt-5 d-flex align-items-center">
+                <div class="form-check">
+                    <input type="checkbox" formControlName="acceptTerms" id="acceptTerms" class="form-check-input"
+                        [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }" />
+                    <label for="acceptTerms" class="form-check-label">I accept the Terms & Conditions</label>
+                    <div *ngIf="submitted && f.acceptTerms.errors" class="invalid-feedback d-block mt-2">
+                        You must accept the terms to proceed
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Terms and Conditions -->
-        <div class="mb-3 form-check">
-            <input type="checkbox" formControlName="acceptTerms" id="acceptTerms" class="form-check-input" [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }" />
-            <label for="acceptTerms" class="form-check-label">Accept Terms & Conditions</label>
-            <div *ngIf="submitted && f.acceptTerms.errors" class="invalid-feedback">You must accept the terms and conditions</div>
-        </div>
+            <!-- Submit Button -->
+            <div class="mt-5 text-center">
+                <button [disabled]="submitting" class="btn-register w-100 w-md-auto">
+                    <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+                    Complete Registration
+                </button>
+            </div>
 
-        <!-- Submit Button -->
-        <div class="mb-3 text-center">
-            <button [disabled]="submitting" class="btn btn-primary">
-                <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
-                Register
-            </button>
-            <a routerLink="../login" href="" class="btn btn-link">Already have an account? Login</a>
-        </div>
-    </form>
+            <!-- Footer Links -->
+            <div class="footer-links">
+                <span>Already have a professional account?</span>
+                <a routerLink="../login" class="link-primary">Sign in here</a>
+            </div>
+        </form>
+    </div>
 </div>

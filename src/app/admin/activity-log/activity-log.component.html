@@ -27,15 +27,21 @@
 
 
     <!-- TABLE BODY -->
-    <div class="log-table-wrapper rounded-4 border border-light shadow-sm overflow-hidden bg-white">
+    <div class="log-table-wrapper rounded-4 border border-light shadow-sm overflow-auto bg-white"
+        style="max-height: 65vh; scroll-behavior: smooth;">
         <table class="table table-hover align-middle mb-0 text-dark">
-            <thead class="bg-light">
+            <thead class="sticky-top bg-light" style="z-index: 10;">
                 <tr>
-                    <th class="px-4 py-4 border-0 text-muted text-uppercase tracking-wider small fw-bold">User Identity
+                    <th class="px-4 py-4 border-0 text-muted text-uppercase tracking-wider small fw-bold glass-header">
+                        User Identity
                     </th>
-                    <th class="py-4 border-0 text-muted text-uppercase tracking-wider small fw-bold">Privilege</th>
-                    <th class="py-4 border-0 text-muted text-uppercase tracking-wider small fw-bold">Security Event</th>
-                    <th class="py-4 border-0 text-muted text-uppercase tracking-wider small fw-bold text-end px-4">Event
+                    <th class="py-4 border-0 text-muted text-uppercase tracking-wider small fw-bold glass-header">
+                        Privilege</th>
+                    <th class="py-4 border-0 text-muted text-uppercase tracking-wider small fw-bold glass-header">
+                        Security Event</th>
+                    <th
+                        class="py-4 border-0 text-muted text-uppercase tracking-wider small fw-bold text-end px-4 glass-header">
+                        Event
                         Timestamp</th>
                 </tr>
             </thead>
@@ -195,6 +201,32 @@
     .active-row {
         background: #f1f5f9 !important;
         border-left: 4px solid #4f46e5 !important;
+    }
+
+    .glass-header {
+        background: rgba(248, 250, 252, 0.8) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Custom Scrollbar for a premium look */
+    .log-table-wrapper::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .log-table-wrapper::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+
+    .log-table-wrapper::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+        border: 2px solid #f1f5f9;
+    }
+
+    .log-table-wrapper::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
     }
 
     .animate-fade-in {

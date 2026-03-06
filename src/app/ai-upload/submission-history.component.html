@@ -209,6 +209,49 @@
             width: 100%;
         }
     }
+
+    /* FLOWING SCROLL ENHANCEMENTS */
+    .table-wrapper {
+        max-height: 65vh;
+        overflow-y: auto;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        border-radius: 24px;
+        position: relative;
+    }
+
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .glass-th {
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+    }
+
+    /* Custom Scrollbar */
+    .table-wrapper::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 20px;
+        border: 2px solid white;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
 </style>
 
 <div class="history-container">
@@ -248,17 +291,17 @@
                 <p class="mt-3 text-muted">Loading history...</p>
             </div>
 
-            <div *ngIf="!loading" class="table-responsive">
+            <div *ngIf="!loading" class="table-wrapper">
                 <table class="modern-table">
-                    <thead>
+                    <thead class="sticky-header">
                         <tr>
-                            <th style="width: 180px;">Timestamp</th>
-                            <th>Resource Identifier</th>
-                            <th>Teacher</th>
-                            <th>Context</th>
-                            <th>Validation</th>
-                            <th>AI Synthesis</th>
-                            <th class="text-end">Verification</th>
+                            <th class="glass-th" style="width: 180px;">Timestamp</th>
+                            <th class="glass-th">Resource Identifier</th>
+                            <th class="glass-th">Teacher</th>
+                            <th class="glass-th">Context</th>
+                            <th class="glass-th">Validation</th>
+                            <th class="glass-th">AI Synthesis</th>
+                            <th class="glass-th text-end">Verification</th>
                         </tr>
                     </thead>
                     <tbody>
